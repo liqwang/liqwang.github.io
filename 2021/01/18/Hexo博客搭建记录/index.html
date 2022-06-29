@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN,en,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.quanquancho.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Step1: 生成基本框架先照着程序🐏的视频做https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1Yb411a7ty 【踩坑1】注意仓库创建时就要设为public，设置成private会失败 域名强制小写，所以Github名字中的大写字母会转为小写 最后得到一个域名为&lt;Github名字&gt;.github.io的博客，但是无法插入图片并且无法渲染数学公式 Step2: 切">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo博客搭建记录">
+<meta property="og:url" content="https://blog.quanquancho.com/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/">
+<meta property="og:site_name" content="WLQ&#39;s Blog">
+<meta property="og:description" content="Step1: 生成基本框架先照着程序🐏的视频做https:&#x2F;&#x2F;www.bilibili.com&#x2F;video&#x2F;BV1Yb411a7ty 【踩坑1】注意仓库创建时就要设为public，设置成private会失败 域名强制小写，所以Github名字中的大写字母会转为小写 最后得到一个域名为&lt;Github名字&gt;.github.io的博客，但是无法插入图片并且无法渲染数学公式 Step2: 切">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.quanquancho.com/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629175918842.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629180451613.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629181031328.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629211725810.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629212431789.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629221506442.png">
+<meta property="article:published_time" content="2021-01-18T11:45:50.000Z">
+<meta property="article:modified_time" content="2021-01-20T05:05:06.000Z">
+<meta property="article:author" content="WLQ">
+<meta property="article:tag" content="杂">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.quanquancho.com/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629175918842.png">
+
+<link rel="canonical" href="https://blog.quanquancho.com/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Hexo博客搭建记录 | WLQ's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WLQ's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WLQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WLQ's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hexo博客搭建记录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-18 19:45:50" itemprop="dateCreated datePublished" datetime="2021-01-18T19:45:50+08:00">2021-01-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-20 13:05:06" itemprop="dateModified" datetime="2021-01-20T13:05:06+08:00">2021-01-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82/" itemprop="url" rel="index"><span itemprop="name">杂</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="Step1-生成基本框架"><a href="#Step1-生成基本框架" class="headerlink" title="Step1: 生成基本框架"></a>Step1: 生成基本框架</h2><p>先照着程序🐏的视频做<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Yb411a7ty">https://www.bilibili.com/video/BV1Yb411a7ty</a></p>
+<p>【踩坑1】注意仓库<strong>创建时</strong>就要设为public，设置成private会失败</p>
+<p>域名强制小写，所以Github名字中的大写字母会转为小写</p>
+<p>最后得到一个域名为<code>&lt;Github名字&gt;.github.io</code>的博客，但是<strong>无法插入图片</strong>并且<strong>无法渲染数学公式</strong></p>
+<h2 id="Step2-切换域名"><a href="#Step2-切换域名" class="headerlink" title="Step2: 切换域名"></a>Step2: 切换域名</h2><ol>
+<li><p>购买域名</p>
+</li>
+<li><p>添加CNAME记录</p>
+<img src="/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629175918842.png" alt="image-20220629175918842" style="zoom: 67%;">
+</li>
+<li><p>【踩坑2】还需要回到Github仓库进行设置，此步参考<a target="_blank" rel="noopener" href="https://jeam.xyz/posts/338f9b1.html">https://jeam.xyz/posts/338f9b1.html</a></p>
+<img src="/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629180451613.png" alt="image-20220629180451613" style="zoom: 67%;">
+
+<p>填入域名后等待DNS验证</p>
+<p>然后等待TLS证书签发并启用，大概要15min</p>
+<p>之后勾选HTTPS服务👇</p>
+<p>.<img src="/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629181031328.png" alt="image-20220629181031328" style="zoom: 67%;"></p>
+</li>
+<li><p>修改<code>_config.yml</code>中的URL</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">url:</span> <span class="string">https://blog.quanquancho.com</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加CNAME文件，位置如下，否则部署后Github仓库中的设置会还原到以前，此步参考<a target="_blank" rel="noopener" href="https://jeam.xyz/posts/338f9b1.html">https://jeam.xyz/posts/338f9b1.html</a></p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">source</span><br><span class="line">│-- CNAME</span><br><span class="line">└-- _posts</span><br><span class="line">  |-- ...</span><br><span class="line">  └-- ...</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="Step3-更换为NexT主题"><a href="#Step3-更换为NexT主题" class="headerlink" title="Step3: 更换为NexT主题"></a>Step3: 更换为NexT主题</h2><p>Github仓库地址：<a target="_blank" rel="noopener" href="https://github.com/theme-next/hexo-theme-next">https://github.com/theme-next/hexo-theme-next</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> blog</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/theme-next/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+
+<p>更改<code>_config.yml</code>中的主题</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">next</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Step4-插入图片"><a href="#Step4-插入图片" class="headerlink" title="Step4: 插入图片"></a>Step4: 插入图片</h2><ol>
+<li><p>【踩坑3】原本的hexo-asset-image插件有bug，所以要安装修改版的插件，此步参考<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1D7411U7Yk">https://www.bilibili.com/video/BV1D7411U7Yk</a></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i https://github.com/CodeFalling/hexo-asset-image</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更改<code>_config.yml</code>，打开图片开关</p>
+</li>
+</ol>
+   <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">post_asset_folder:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>【踩坑4】</p>
+<p>Typora的md文件中图片引用格式为<code>&lt;md文件名&gt;.pictures/&lt;图片名&gt;</code> </p>
+<p><code>hexo g; hexo s</code>后发现仍然无法显示图片，原因是生成的html文件夹内没有图片</p>
+<p>于是搓了一个Java程序将<code>_posts</code>文件夹里的图片拷贝到<code>public</code>内</p>
+<p><strong>注意</strong>：<code>_posts</code>里的md文件开头必须要有以下注释，这个Java程序是根据<code>date</code>字段的值定位<code>public</code>文件夹路径的</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">...</span><br><span class="line">date: 2022-06-17 09:32:54</span><br><span class="line">updated: 2022-06-17 09:50:43</span><br><span class="line"><span class="section">...</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure>
+
+<p>如果没有注释，public文件夹的路径就会默认根据md文件的创建时间生成</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CopyPictures</span> &#123;</span><br><span class="line">	<span class="meta">@SuppressWarnings(&quot;ConstantConditions&quot;)</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">		<span class="type">File</span> <span class="variable">originDir</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;source/_posts&quot;</span>);</span><br><span class="line">		<span class="keyword">for</span> (File file : originDir.listFiles()) &#123;</span><br><span class="line">			<span class="keyword">if</span>(file.getName().endsWith(<span class="string">&quot;.pictures&quot;</span>))&#123;</span><br><span class="line">				<span class="type">File</span> <span class="variable">pictures</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(file.getAbsolutePath());</span><br><span class="line">				<span class="type">String</span> <span class="variable">markdownPath</span> <span class="operator">=</span> file.getAbsolutePath().replace(<span class="string">&quot;pictures&quot;</span>, <span class="string">&quot;md&quot;</span>);</span><br><span class="line">				<span class="type">String</span> <span class="variable">createTime</span> <span class="operator">=</span> Files.readString(Path.of(markdownPath)).split(<span class="string">&quot;date: &quot;</span>)[<span class="number">1</span>].split(<span class="string">&quot; &quot;</span>)[<span class="number">0</span>];</span><br><span class="line">				<span class="type">String</span> <span class="variable">year</span> <span class="operator">=</span> createTime.substring(<span class="number">0</span>,<span class="number">4</span>);</span><br><span class="line">				<span class="type">String</span> <span class="variable">month</span> <span class="operator">=</span> createTime.substring(<span class="number">5</span>,<span class="number">7</span>);</span><br><span class="line">				<span class="type">String</span> <span class="variable">day</span> <span class="operator">=</span> createTime.substring(<span class="number">8</span>,<span class="number">10</span>);</span><br><span class="line">				<span class="type">String</span> <span class="variable">article</span> <span class="operator">=</span> file.getName().replace(<span class="string">&quot;.pictures&quot;</span>, <span class="string">&quot;&quot;</span>);</span><br><span class="line">				<span class="keyword">for</span> (File picture : pictures.listFiles()) &#123;</span><br><span class="line">					<span class="type">FileInputStream</span> <span class="variable">fis</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(picture);</span><br><span class="line">					<span class="type">FileOutputStream</span> <span class="variable">fos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(String.format(<span class="string">&quot;public/%s/%s/%s/%s/%s&quot;</span>, year, month, day, article, picture.getName()));</span><br><span class="line">					<span class="type">byte</span>[] buffer=<span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">1024</span>];</span><br><span class="line">					<span class="type">int</span> count;</span><br><span class="line">					<span class="keyword">while</span> ((count=fis.read(buffer,<span class="number">0</span>,buffer.length))!=-<span class="number">1</span>) &#123;</span><br><span class="line">						fos.write(buffer,<span class="number">0</span>,count);</span><br><span class="line">					&#125;</span><br><span class="line">					fis.close();</span><br><span class="line">					fos.close();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.print(<span class="string">&quot;Copy pictures done&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：该Java程序使用了<code>Files.readString(Path.of(&quot;...&quot;))</code>方法读取文件内容，该方法只有**JDK11+**才有</p>
+<p>如果是JDK8，可以将该方法替换为传统的流式读取文件内容</p>
+<p>将该文件放到项目根目录下，然后在项目根目录下执行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ hexo clean</span><br><span class="line">...</span><br><span class="line">$ hexo g</span><br><span class="line">...</span><br><span class="line">$ java CopyPictures.java</span><br><span class="line">Copy pictures <span class="keyword">done</span></span><br><span class="line">$ hexo s</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>成功显示图片</p>
+</li>
+</ol>
+<p>至此，可以在<code>_posts</code>内使用Typora编辑markdown，实现与hexo的无缝衔接</p>
+<h2 id="Step5-渲染数学公式"><a href="#Step5-渲染数学公式" class="headerlink" title="Step5: 渲染数学公式"></a>Step5: 渲染数学公式</h2><p>直接修改<code>theme/next/_config.yml</code>即可</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">math:</span></span><br><span class="line">  <span class="comment"># Default (true) will load mathjax / katex script on demand.</span></span><br><span class="line">  <span class="comment"># That is it only render those page which has `mathjax: true` in Front-matter.</span></span><br><span class="line">  <span class="comment"># If you set it to false, it will load mathjax / katex srcipt EVERY PAGE.</span></span><br><span class="line">  <span class="attr">per_page:</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># hexo-renderer-pandoc (or hexo-renderer-kramed) required for full MathJax support.</span></span><br><span class="line">  <span class="attr">mathjax:</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># See: https://mhchem.github.io/MathJax-mhchem/</span></span><br><span class="line">    <span class="attr">mhchem:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>这里直接使用了默认的<code>hexo-renderer-marked</code>渲染插件</p>
+<p>【踩坑5】因为使用<code>hexo-renderer-pandoc</code>插件在<code>hexo g</code>时会有如下报错</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">$ hexo g</span><br><span class="line">INFO  Validating config</span><br><span class="line">INFO  Start processing</span><br><span class="line">FATAL &#123;</span><br><span class="line">  err: Error:</span><br><span class="line">  [ERROR][hexo-renderer-pandoc] On C:\Users\WLQ\IdeaProjects\blog\<span class="built_in">source</span>\_posts\计网.md</span><br><span class="line">  [ERROR][hexo-renderer-pandoc] pandoc exited with code null.</span><br><span class="line">      at Hexo.pandocRenderer (C:\Users\WLQ\IdeaProjects\blog\node_modules\hexo-renderer-pandoc\index.js:119:11)</span><br><span class="line">      at Hexo.tryCatcher (C:\Users\WLQ\IdeaProjects\blog\node_modules\bluebird\js\release\util.js:16:23)</span><br><span class="line">      at Hexo.&lt;anonymous&gt; (C:\Users\WLQ\IdeaProjects\blog\node_modules\bluebird\js\release\method.js:15:34)</span><br><span class="line">      at C:\Users\WLQ\IdeaProjects\blog\node_modules\hexo\lib\hexo\render.js:81:22</span><br><span class="line">      at tryCatcher (C:\Users\WLQ\IdeaProjects\blog\node_modules\bluebird\js\release\util.js:16:23)</span><br><span class="line">      at Promise._settlePromiseFromHandler (C:\Users\WLQ\IdeaProjects\blog\node_modules\bluebird\js\release\promise.js:547:31)</span><br><span class="line">      at Promise._settlePromise (C:\Users\WLQ\IdeaProjects\blog\node_modules\bluebird\js\release\promise.js:604:18)</span><br><span class="line">      at Promise._settlePromiseCtx (C:\Users\WLQ\IdeaProjects\blog\node_modules\bluebird\js\release\promise.js:641:10)</span><br><span class="line">      at _drainQueueStep (C:\Users\WLQ\IdeaProjects\blog\node_modules\bluebird\js\release\async.js:97:12)</span><br><span class="line">      at _drainQueue (C:\Users\WLQ\IdeaProjects\blog\node_modules\bluebird\js\release\async.js:86:9)</span><br><span class="line">      at Async._drainQueues (C:\Users\WLQ\IdeaProjects\blog\node_modules\bluebird\js\release\async.js:102:5)</span><br><span class="line">      at Immediate.Async.drainQueues [as _onImmediate] (C:\Users\WLQ\IdeaProjects\blog\node_modules\bluebird\js\release\async.js:15:14)</span><br><span class="line">      at processImmediate (node:internal/timers:466:21)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>按照<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/105986034%E7%9A%84%E5%81%9A%E6%B3%95%E5%AE%89%E8%A3%85%60hexo-math%60%E6%8F%92%E4%BB%B6%E9%87%8D%E6%96%B0%E6%B8%B2%E6%9F%93%E4%B9%9F%E6%97%A0%E6%B3%95%E8%A7%A3%E5%86%B3%EF%BC%8C%E5%8E%9F%E5%9B%A0%E6%9C%AA%E7%9F%A5">https://zhuanlan.zhihu.com/p/105986034的做法安装`hexo-math`插件重新渲染也无法解决，原因未知</a></p>
+<p>有相同报错的issue: <a target="_blank" rel="noopener" href="https://github.com/theme-next/hexo-theme-next/issues/1454%EF%BC%8C%E4%BD%86%E6%98%AF%E6%98%AF%E5%9C%A8%60hexo">https://github.com/theme-next/hexo-theme-next/issues/1454，但是是在`hexo</a> s&#96;时报错的</p>
+<p>Typora中的公式同样使用Mathjax渲染，但<code>hexo-renderer-marked</code>渲染后发现有很多地方与Typora中的不一致，包括但不限于转义符号</p>
+<table>
+<thead>
+<tr>
+<th align="center">markown源码</th>
+<th align="center">Typora渲染</th>
+<th align="center">hexo-renderer-marked渲染</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><img src="/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629211725810.png" alt="image-20220629211725810" style="zoom:80%;"></td>
+<td align="center">花括号</td>
+<td align="center">空白</td>
+</tr>
+<tr>
+<td align="center"><img src="/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629212431789.png" alt="image-20220629212431789"></td>
+<td align="center">换行+空白</td>
+<td align="center">花括号</td>
+</tr>
+</tbody></table>
+<h2 id="Step6-设置阅读全文"><a href="#Step6-设置阅读全文" class="headerlink" title="Step6: 设置阅读全文"></a>Step6: 设置阅读全文</h2><p>此时首页里会展示文章的全部内容，非常不美观，需要设置成以下效果👇</p>
+<p>.<img src="/2021/01/18/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/image-20220629221506442.png" alt="image-20220629221506442" style="zoom:67%;"></p>
+<p>NexT版本为最新的7.8.0，其他版本方法不同</p>
+<ol>
+<li>&#96;&#96;&#96;sh<br>$ npm install hexo-excerpt<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2.  根目录`_config.yml`中加入</span><br><span class="line"></span><br><span class="line">   ```yml</span><br><span class="line">   excerpt:</span><br><span class="line">     depth: 5			# 他的大小就是全文阅读预览长度设置</span><br><span class="line">     excerpt_excludes: []</span><br><span class="line">     more_excludes: []</span><br><span class="line">     hideWholePostExcerpts: true</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>此步参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/CodeJoker_7/article/details/123235687">https://blog.csdn.net/CodeJoker_7/article/details/123235687</a></p>
+<h2 id="环境信息"><a href="#环境信息" class="headerlink" title="环境信息"></a>环境信息</h2><ol>
+<li><p>windows 10</p>
+</li>
+<li><p><a href="mailto:&#110;&#x6f;&#100;&#101;&#x2e;&#106;&#x73;&#x40;&#x31;&#x36;&#46;&#x31;&#53;&#46;&#49;">&#110;&#x6f;&#100;&#101;&#x2e;&#106;&#x73;&#x40;&#x31;&#x36;&#46;&#x31;&#53;&#46;&#49;</a></p>
+</li>
+<li><p><a href="mailto:&#x6e;&#x70;&#x6d;&#64;&#56;&#46;&#x31;&#x31;&#46;&#48;">&#x6e;&#x70;&#x6d;&#64;&#56;&#46;&#x31;&#x31;&#46;&#48;</a></p>
+</li>
+<li><p>Typora for windows(x64)@1.2.5</p>
+</li>
+<li><p>npm packages</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ npm <span class="built_in">ls</span></span><br><span class="line">+-- hexo-asset-image@0.0.5 (git+ssh://git@github.com/CodeFalling/hexo-asset-image.git)</span><br><span class="line">+-- hexo-generator-archive@1.0.0</span><br><span class="line">+-- hexo-generator-category@1.0.0</span><br><span class="line">+-- hexo-generator-index@2.0.0</span><br><span class="line">+-- hexo-generator-tag@1.0.0</span><br><span class="line">+-- hexo-renderer-ejs@2.0.0</span><br><span class="line">+-- hexo-renderer-marked@5.0.0</span><br><span class="line">+-- hexo-renderer-stylus@2.1.0</span><br><span class="line">+-- hexo-server@3.0.0</span><br><span class="line">`-- hexo@6.2.0</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="mailto:&#78;&#x65;&#x78;&#x54;&#45;&#116;&#104;&#101;&#109;&#x65;&#x40;&#x76;&#x37;&#x2e;&#56;&#46;&#x30;">&#78;&#x65;&#x78;&#x54;&#45;&#116;&#104;&#101;&#109;&#x65;&#x40;&#x76;&#x37;&#x2e;&#56;&#46;&#x30;</a></p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9D%82/" rel="tag"># 杂</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/17/%E8%AE%A1%E7%BD%91/" rel="next" title="计算机网络(CS305)期末复习笔记">
+      计算机网络(CS305)期末复习笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Step1-%E7%94%9F%E6%88%90%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">Step1: 生成基本框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step2-%E5%88%87%E6%8D%A2%E5%9F%9F%E5%90%8D"><span class="nav-number">2.</span> <span class="nav-text">Step2: 切换域名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step3-%E6%9B%B4%E6%8D%A2%E4%B8%BANexT%E4%B8%BB%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">Step3: 更换为NexT主题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step4-%E6%8F%92%E5%85%A5%E5%9B%BE%E7%89%87"><span class="nav-number">4.</span> <span class="nav-text">Step4: 插入图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step5-%E6%B8%B2%E6%9F%93%E6%95%B0%E5%AD%A6%E5%85%AC%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">Step5: 渲染数学公式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Step6-%E8%AE%BE%E7%BD%AE%E9%98%85%E8%AF%BB%E5%85%A8%E6%96%87"><span class="nav-number">6.</span> <span class="nav-text">Step6: 设置阅读全文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E4%BF%A1%E6%81%AF"><span class="nav-number">7.</span> <span class="nav-text">环境信息</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">WLQ</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WLQ</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
