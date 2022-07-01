@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN,en,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"quanquan-cho.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="表格结构及设计结构  共建立了10张表，其中department,major,student,course,section,section_class,instructor,semester均为储存数据的单表，major_course，student_section是多对多的关系表。 设计系统主要分为两部分，一部分主体为课程，另一部分主体为同学，两部分与其基本信息共同构成整个关系库。表格依据需要实">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库原理(CS307)Project2报告">
+<meta property="og:url" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/">
+<meta property="og:site_name" content="WLQ&#39;s Blog">
+<meta property="og:description" content="表格结构及设计结构  共建立了10张表，其中department,major,student,course,section,section_class,instructor,semester均为储存数据的单表，major_course，student_section是多对多的关系表。 设计系统主要分为两部分，一部分主体为课程，另一部分主体为同学，两部分与其基本信息共同构成整个关系库。表格依据需要实">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211230121112.png">
+<meta property="og:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211230135239.png">
+<meta property="og:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211229230904.png">
+<meta property="og:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211229231953.png">
+<meta property="og:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211229232103.png">
+<meta property="og:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211229232305.png">
+<meta property="og:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211229232711.png">
+<meta property="og:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211230142548.jpg">
+<meta property="og:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/image-20211230000106540-16407936701961.png">
+<meta property="og:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/image-20211230185526812-16408617305821.png">
+<meta property="article:published_time" content="2022-01-05T11:45:50.000Z">
+<meta property="article:modified_time" content="2022-01-09T05:05:06.000Z">
+<meta property="article:author" content="WLQ">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211230121112.png">
+
+<link rel="canonical" href="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数据库原理(CS307)Project2报告 | WLQ's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WLQ's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://quanquan-cho.github.io/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WLQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WLQ's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库原理(CS307)Project2报告
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-05 19:45:50" itemprop="dateCreated datePublished" datetime="2022-01-05T19:45:50+08:00">2022-01-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-09 13:05:06" itemprop="dateModified" datetime="2022-01-09T13:05:06+08:00">2022-01-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="表格结构及设计"><a href="#表格结构及设计" class="headerlink" title="表格结构及设计"></a>表格结构及设计</h3><h4 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h4><img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211230121112.png">
+
+<p>共建立了10张表，其中department,major,student,course,section,section_class,instructor,semester均为储存数据的单表，major_course，student_section是多对多的关系表。</p>
+<h4 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h4><p>系统主要分为两部分，一部分主体为课程，另一部分主体为同学，两部分与其基本信息共同构成整个关系库。表格依据需要实现接口原则，基本复原dto文件夹中的class，其中CourseSearchEntry,CourseTable为查询更新操作，不建表。User对应instructor和student两部分。基本将每个class中的成员变量转化为列储存，部分引用类型成员变量需要转化储存为基本类型。如下：</p>
+<p>对于连接两张表关系的变量，如student.class中Major major变量，直接用major.id储存。</p>
+<p>将prerequisite 转换为Varchar类型, 其中AndPrerequisite类型，用AND连接，OrPrerequisite类型，用OR连接，转化为如图形式，方便后续运用逆波兰算法判断是否满足先修课，若无则为null。</p>
+<img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211230135239.png">
+
+<p>student_section表中，为方便储存判断，将分数course grading转化为了int类型。转化遵循逻辑如下：如果该同学本门课还没有成绩，存mark&#x3D;-1，若已经登过分，百分制对应0—100；二进制分数，PASS对应-2，FAILE对应-3。</p>
+<h3 id="实现插入和查询"><a href="#实现插入和查询" class="headerlink" title="实现插入和查询"></a>实现插入和查询</h3><p>均采用demo中给的实例，写出所需sql，运用Preparedstatement插入所需元素，运用execute()执行。</p>
+<p>优化：1、速度：给定一个成员变量connect用于连接数据库，从连接池中调用，不需要执行每个木块重新			连接，速度大大提升。</p>
+<p>​			2、由于每个模块有大量重复语句，采用Util封装,可大大缩短代码量。Util 分为更新和查询两部分</p>
+<p>update</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通用的增、删、改操作，返回受影响的行数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">update</span><span class="params">(Connection con,String sql,Object... param)</span> <span class="keyword">throws</span> SQLException&#123;</span><br><span class="line">        PreparedStatement ps;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ps = con.prepareStatement(sql);</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; param.length; i++) &#123;</span><br><span class="line">                ps.setObject(i + <span class="number">1</span>, param[i]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.exit(<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ps.executeUpdate();</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通用的add操作，返回自动生成的主键</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">addAndGetKey</span><span class="params">(Connection con,String sql,Object... param)</span>&#123;</span><br><span class="line">        <span class="keyword">try</span> (PreparedStatement ps=con.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS))&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; param.length; i++) &#123;</span><br><span class="line">                ps.setObject(i+<span class="number">1</span>,param[i]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                ps.executeUpdate();</span><br><span class="line">            &#125;<span class="keyword">catch</span> (SQLException e)&#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IntegrityViolationException</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="type">ResultSet</span> <span class="variable">rs</span> <span class="operator">=</span> ps.getGeneratedKeys();</span><br><span class="line">            rs.next();</span><br><span class="line">            <span class="keyword">return</span> ps.getGeneratedKeys().getInt(<span class="string">&quot;id&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.exit(<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>query</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通用的查询具体类的方法，**别名必须与属性名一致**</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; ArrayList&lt;T&gt; <span class="title function_">query</span><span class="params">(Class&lt;T&gt; clazz,Connection con,String sql,Object... param)</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>(PreparedStatement ps=con.prepareStatement(sql))&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; param.length; i++) &#123;</span><br><span class="line">                ps.setObject(i+<span class="number">1</span>,param[i]);</span><br><span class="line">            &#125;</span><br><span class="line">            ResultSet rs=ps.executeQuery();</span><br><span class="line">            <span class="type">ResultSetMetaData</span> <span class="variable">rsmd</span> <span class="operator">=</span> rs.getMetaData();</span><br><span class="line">            <span class="type">int</span> <span class="variable">col</span> <span class="operator">=</span> rsmd.getColumnCount();</span><br><span class="line">            ArrayList&lt;T&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">            <span class="keyword">while</span>(rs.next())&#123;</span><br><span class="line">                <span class="type">T</span> <span class="variable">t</span> <span class="operator">=</span> clazz.newInstance();</span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; col; i++) &#123;</span><br><span class="line">                    Object val;</span><br><span class="line">                    <span class="type">String</span> <span class="variable">otherName</span> <span class="operator">=</span> rsmd.getColumnLabel(i+<span class="number">1</span>);</span><br><span class="line">                    <span class="keyword">switch</span> (otherName) &#123;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">&quot;weekList&quot;</span> -&gt; val = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;(List.of((Short[]) rs.getArray(i + <span class="number">1</span>).getArray()));</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">&quot;dayOfWeek&quot;</span> -&gt; val = DayOfWeek.of(rs.getInt(i + <span class="number">1</span>));</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">&quot;grading&quot;</span> -&gt; val = (rs.getBoolean(i + <span class="number">1</span>) ?</span><br><span class="line">                                Course.CourseGrading.PASS_OR_FAIL :</span><br><span class="line">                                Course.CourseGrading.HUNDRED_MARK_SCORE);</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">&quot;classBegin&quot;</span>, <span class="string">&quot;classEnd&quot;</span> -&gt; val = rs.getShort(i + <span class="number">1</span>);</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">&quot;instructor&quot;</span> -&gt; &#123;</span><br><span class="line">                            sql = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">                                    select id,</span></span><br><span class="line"><span class="string">                                           full_name &quot;fullName&quot;</span></span><br><span class="line"><span class="string">                                    from instructor</span></span><br><span class="line"><span class="string">                                    where id=?&quot;&quot;&quot;</span>;</span><br><span class="line">                            val = query(Instructor.class, con, sql, rs.getInt(i + <span class="number">1</span>)).get(<span class="number">0</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">&quot;student&quot;</span> -&gt; &#123;</span><br><span class="line">                            sql = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">                                    select id,</span></span><br><span class="line"><span class="string">                                           full_name &quot;fullName&quot;,</span></span><br><span class="line"><span class="string">                                           enrolled_date &quot;enrolledDate&quot;,</span></span><br><span class="line"><span class="string">                                           major_id &quot;majorId&quot;</span></span><br><span class="line"><span class="string">                                    from student</span></span><br><span class="line"><span class="string">                                    where id=?;&quot;&quot;&quot;</span>;</span><br><span class="line">                            val = query(Student.class, con, sql, rs.getInt(i + <span class="number">1</span>)).get(<span class="number">0</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">&quot;major&quot;</span> -&gt; &#123;</span><br><span class="line">                            sql = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">                                    select id,</span></span><br><span class="line"><span class="string">                                           name,</span></span><br><span class="line"><span class="string">                                           department_id &quot;departmentId&quot;</span></span><br><span class="line"><span class="string">                                    from major</span></span><br><span class="line"><span class="string">                                    where id=?;&quot;&quot;&quot;</span>;</span><br><span class="line">                            val = query(Major.class, con, sql, rs.getInt(i + <span class="number">1</span>)).get(<span class="number">0</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">&quot;department&quot;</span> -&gt; &#123;</span><br><span class="line">                            sql = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">                                    select *</span></span><br><span class="line"><span class="string">                                    from department</span></span><br><span class="line"><span class="string">                                    where id=?;&quot;&quot;&quot;</span>;</span><br><span class="line">                            val = query(Department.class, con, sql, rs.getInt(i + <span class="number">1</span>)).get(<span class="number">0</span>);</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">default</span> -&gt; val = rs.getObject(i + <span class="number">1</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="type">String</span> <span class="variable">fieldName</span> <span class="operator">=</span> rsmd.getColumnLabel(i+<span class="number">1</span>);</span><br><span class="line">                    <span class="type">Field</span> <span class="variable">field</span> <span class="operator">=</span> clazz.getField(fieldName);</span><br><span class="line">                    field.set(t,val);</span><br><span class="line">                &#125;</span><br><span class="line">                list.add(t);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> list;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchFieldException|InstantiationException|IllegalAccessException|SQLException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.exit(<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 通用的查询单一属性的方法,如String, int, DayOfWeek</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;不需要修改列的别名</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; ArrayList&lt;T&gt; <span class="title function_">querySingle</span><span class="params">(Connection con,String sql,Object... param)</span>&#123;</span><br><span class="line">        <span class="keyword">try</span>(PreparedStatement ps=con.prepareStatement(sql))&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; param.length; i++) &#123;</span><br><span class="line">                ps.setObject(i+<span class="number">1</span>,param[i]);</span><br><span class="line">            &#125;</span><br><span class="line">            ResultSet rs=ps.executeQuery();</span><br><span class="line">            <span class="type">ResultSetMetaData</span> <span class="variable">rsmd</span> <span class="operator">=</span> rs.getMetaData();</span><br><span class="line">            ArrayList&lt;T&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">            <span class="keyword">while</span>(rs.next()) &#123;</span><br><span class="line">                Object val;</span><br><span class="line">                <span class="keyword">if</span> (rsmd.getColumnName(<span class="number">1</span>).equals(<span class="string">&quot;day_of_week&quot;</span>)) &#123;</span><br><span class="line">                    val = DayOfWeek.of(rs.getInt(<span class="number">1</span>));</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    val = rs.getObject(<span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                list.add((T)val);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> list;</span><br><span class="line">        &#125;<span class="keyword">catch</span>(SQLException e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.exit(<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Util 封装仅适用于返回数据库中建的表中列一一对应的情况，所以对于已经修改了class中成员变量从引用类型到基础类型的情况，Util中对这些特殊情况做了讨论并还原，增强了此封装的通用性。</p>
+<p>实现接口时应用Util示例：</p>
+<ul>
+<li>query</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;Course&gt; <span class="title function_">getAllCourses</span><span class="params">()</span> &#123;</span><br><span class="line">       <span class="keyword">try</span> (Connection con=SQLDataSource.getInstance().getSQLConnection())&#123;</span><br><span class="line">           String sql= <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">                       select id,</span></span><br><span class="line"><span class="string">                              name,</span></span><br><span class="line"><span class="string">                              credit,</span></span><br><span class="line"><span class="string">                              class_hour &quot;classHour&quot;,</span></span><br><span class="line"><span class="string">                              is_pf grading</span></span><br><span class="line"><span class="string">                       from course;&quot;&quot;&quot;</span>;</span><br><span class="line">           <span class="keyword">return</span> Util.query(Course.class,con,sql);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">           System.exit(<span class="number">1</span>);</span><br><span class="line">           <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>add</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">addCourseSection</span><span class="params">(String courseId, <span class="type">int</span> semesterId, String sectionName, <span class="type">int</span> totalCapacity)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> (Connection con=SQLDataSource.getInstance().getSQLConnection())&#123;</span><br><span class="line">            String sql=<span class="string">&quot;insert into section (course_id,semester_id,name,total_capacity,left_capacity) values (?,?,?,?,?)&quot;</span>;</span><br><span class="line">            <span class="keyword">return</span> Util.addAndGetKey(con,sql, courseId,</span><br><span class="line">                                              semesterId,</span><br><span class="line">                                              sectionName,</span><br><span class="line">                                              totalCapacity,</span><br><span class="line">                                              totalCapacity);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.exit(<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="性能-amp-性能分析"><a href="#性能-amp-性能分析" class="headerlink" title="性能 &amp; 性能分析"></a>性能 &amp; 性能分析</h3><h4 id="Resource-Consumption"><a href="#Resource-Consumption" class="headerlink" title="Resource Consumption"></a><strong>Resource Consumption</strong></h4><ul>
+<li><p>Memory Consumption:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> pg_size_pretty(pg_tablespace_size(<span class="string">&#x27;pg_default&#x27;</span>));</span><br></pre></td></tr></table></figure></li>
+</ul>
+<img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211229230904.png">
+
+<ul>
+<li><p>Disk Consumption</p>
+<p>数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> pg_size_pretty(pg_database_size(<span class="string">&#x27;project_class2&#x27;</span>));</span><br></pre></td></tr></table></figure></li>
+</ul>
+<img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211229231953.png">
+
+
+
+<pre><code> 索引
+</code></pre>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> indexrelname, pg_size_pretty(pg_relation_size(relid)) <span class="keyword">from</span> pg_stat_user_indexes <span class="keyword">where</span> schemaname<span class="operator">=</span><span class="string">&#x27;public&#x27;</span> <span class="keyword">order</span> <span class="keyword">by</span> pg_relation_size(relid) <span class="keyword">desc</span>;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211229232103.png">
+
+<p>​	表本身（不含索引）</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> relname, pg_size_pretty(pg_relation_size(relid)) <span class="keyword">from</span> pg_stat_user_tables <span class="keyword">where</span> schemaname<span class="operator">=</span><span class="string">&#x27;public&#x27;</span> <span class="keyword">order</span> <span class="keyword">by</span> pg_relation_size(relid) <span class="keyword">desc</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211229232305.png">
+
+<p>​	表包括索引所占内存：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    table_schema <span class="operator">||</span> <span class="string">&#x27;.&#x27;</span> <span class="operator">||</span> table_name <span class="keyword">AS</span> table_full_name,</span><br><span class="line">    pg_size_pretty(pg_total_relation_size(<span class="string">&#x27;&quot;&#x27;</span> <span class="operator">||</span> table_schema <span class="operator">||</span> <span class="string">&#x27;&quot;.&quot;&#x27;</span> <span class="operator">||</span> table_name <span class="operator">||</span> <span class="string">&#x27;&quot;&#x27;</span>)) <span class="keyword">AS</span> size</span><br><span class="line"><span class="keyword">FROM</span> project_class2.information_schema.tables</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span></span><br><span class="line">pg_total_relation_size(<span class="string">&#x27;&quot;&#x27;</span> <span class="operator">||</span> table_schema <span class="operator">||</span> <span class="string">&#x27;&quot;.&quot;&#x27;</span> <span class="operator">||</span> table_name <span class="operator">||</span> <span class="string">&#x27;&quot;&#x27;</span>) <span class="keyword">DESC</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211229232711.png">
+
+<p>上述搜索结果可得，索引和数据占据内存相近，他们构成了整个数据库的大部分内存，还有一些内存用于储存pg_和information_表格，占一小部分。其中，占内存最大的是student_section表格（57&#x2F;67)，它的数据接近五十万条。</p>
+<h4 id="Speed-and-Correctness"><a href="#Speed-and-Correctness" class="headerlink" title="Speed and Correctness"></a>Speed and Correctness</h4><img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211230142548.jpg">
+
+<p>优化：用流进行searchcourse筛选，但要注意的是一些情况不适用，只能进行for循环筛选。</p>
+<p>其中，drop course 共有146637条命令，正确执行146637条，正确率为100%。</p>
+<p>​			drop enrolled course共有 813 条命令，正确率为100%。</p>
+<p>其余的test样例数为1000条，通过率在90%-100%之间。</p>
+<h4 id="Concurrency"><a href="#Concurrency" class="headerlink" title="Concurrency"></a>Concurrency</h4><ul>
+<li>Simultaneous Query:</li>
+</ul>
+<p>在<code>ProjectJudge</code>文件中，每一个查询指令都是并行查询，例如在<code>testCourseTables</code>中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;CourseTable&gt; courseTableResults = IntStream.range(<span class="number">0</span>, courseTableParams.size()).parallel()</span><br><span class="line">                    .mapToObj(it -&gt; testCourseTable(courseTableParams.get(it)))</span><br><span class="line">                    .collect(Collectors.toUnmodifiableList());</span><br></pre></td></tr></table></figure>
+
+<p> 其中，每次的查询总数大约有1000条。</p>
+<ul>
+<li>Transaction Safety：</li>
+</ul>
+<p>在这个数据库中，有且仅有一个user能够拥有改变表中信息的权限。只有在<code>config</code>中输入正确的<code>username</code>和<code>password</code>才能成功连接上数据库并查询或修改里面的数据。我们还创造了一个新的用户students，用来代表使用这个数据库的学生，他没有修改任何一个表的权限，但是可以查询表中的内容。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> students password <span class="string">&#x27;123456&#x27;</span>;</span><br><span class="line"><span class="keyword">alter</span> database project2 owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> course owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> department owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> instructor owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> major owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> major_course owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> section owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> section_class owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> semester owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> student owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> student_section owner <span class="keyword">to</span> students;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">update</span> <span class="keyword">on</span> course <span class="keyword">from</span> students;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">update</span> <span class="keyword">on</span> department <span class="keyword">from</span> students;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">update</span> <span class="keyword">on</span> instructor <span class="keyword">from</span> students;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">update</span> <span class="keyword">on</span> major <span class="keyword">from</span> students;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">update</span> <span class="keyword">on</span> major_course <span class="keyword">from</span> students;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">update</span> <span class="keyword">on</span> section <span class="keyword">from</span> students;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">update</span> <span class="keyword">on</span> section_class <span class="keyword">from</span> students;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">update</span> <span class="keyword">on</span> semester <span class="keyword">from</span> students;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">update</span> <span class="keyword">on</span> student <span class="keyword">from</span> students;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">update</span> <span class="keyword">on</span> student_section <span class="keyword">from</span> students;</span><br></pre></td></tr></table></figure>
+
+<p>所以，如果是以普通的student的身份是无法修改表中信息的。</p>
+<img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/image-20211230000106540-16407936701961.png">
+
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><h4 id="用流进行searchCourse-的筛选"><a href="#用流进行searchCourse-的筛选" class="headerlink" title="用流进行searchCourse()的筛选"></a>用流进行searchCourse()的筛选</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;Info&gt; infos = Util.query(Info.class, con, sql,semesterId).stream().parallel();</span><br><span class="line">            <span class="comment">//1.筛选searchCid &amp; searchName &amp; ignoreFull(只和section有关)</span></span><br><span class="line">            <span class="keyword">if</span>(searchCid!=<span class="literal">null</span> &amp;&amp; !searchCid.equals(<span class="string">&quot;&quot;</span>))&#123;</span><br><span class="line">                infos=infos.filter(info -&gt; info.courseId.contains(searchCid));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(searchName!=<span class="literal">null</span> &amp;&amp; !searchName.equals(<span class="string">&quot;&quot;</span>))&#123;</span><br><span class="line">                infos=infos.filter(info -&gt; info.courseFullName.contains(searchName));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(ignoreFull)&#123;</span><br><span class="line">                infos=infos.filter(info -&gt; info.leftCapacity&gt;<span class="number">0</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            List&lt;Info&gt; infoList = infos.collect(Collectors.toList());<span class="comment">//Stream→List</span></span><br><span class="line">            <span class="comment">//2.处理4个正向筛选条件(和细分的class有关的筛选条件)</span></span><br><span class="line">            HashSet&lt;Integer&gt; filteredSids = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;&gt;();</span><br><span class="line">            <span class="keyword">for</span> (Info info : infoList) &#123;</span><br><span class="line">                <span class="keyword">if</span>((searchInstructor==<span class="literal">null</span>||searchInstructor.equals(<span class="string">&quot;&quot;</span>)||info.instructorFullName.replace(<span class="string">&quot; &quot;</span>,<span class="string">&quot;&quot;</span>).contains(searchInstructor.replace(<span class="string">&quot; &quot;</span>,<span class="string">&quot;&quot;</span>)))&amp;&amp;</span><br><span class="line">                        (searchDayOfWeek==<span class="literal">null</span>||info.dayOfWeek == searchDayOfWeek)&amp;&amp;</span><br><span class="line">                        (searchClassTime==<span class="literal">null</span>||info.classBegin &lt;= searchClassTime &amp;&amp; info.classEnd &gt;= searchClassTime)</span><br><span class="line">                        )&#123;</span><br><span class="line">                    <span class="keyword">if</span>(searchClassLocations!=<span class="literal">null</span> &amp;&amp; !searchClassLocations.isEmpty())&#123;</span><br><span class="line">                        <span class="keyword">for</span> (String eachLocation : searchClassLocations) &#123;</span><br><span class="line">                            <span class="keyword">if</span>(info.location.contains(eachLocation))&#123;</span><br><span class="line">                                filteredSids.add(info.sectionId);</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;<span class="keyword">else</span>&#123;filteredSids.add(info.sectionId);&#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            infoList.removeIf(info -&gt; !filteredSids.contains(info.sectionId));</span><br></pre></td></tr></table></figure>
+
+<h4 id="用逆波兰算法处理先修课string"><a href="#用逆波兰算法处理先修课string" class="headerlink" title="用逆波兰算法处理先修课string"></a>用逆波兰算法处理先修课string</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">passedPre</span><span class="params">(ArrayList&lt;String&gt; passedCids,String courseId)</span>&#123;</span><br><span class="line">        <span class="keyword">try</span> (Connection con=SQLDataSource.getInstance().getSQLConnection())&#123;</span><br><span class="line">            <span class="comment">//1.获取布尔表达式</span></span><br><span class="line">            <span class="comment">//1.1获取先修课String: pre</span></span><br><span class="line">            String sql=<span class="string">&quot;select prerequisite from course where id=?&quot;</span>;</span><br><span class="line">            <span class="type">String</span> <span class="variable">pre</span> <span class="operator">=</span> (String)Util.querySingle(con, sql, courseId).get(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">if</span>(pre==<span class="literal">null</span>)&#123;<span class="keyword">return</span> <span class="literal">true</span>;&#125;</span><br><span class="line">            <span class="comment">//1.2提取出pre中的课程id: eg:((MA101A OR MA101B) AND MA103A)</span></span><br><span class="line">            String[] preCids = pre.split(<span class="string">&quot; (AND|OR) &quot;</span>);<span class="comment">// ((MA101A MA101B) MA103A)</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; preCids.length; i++) &#123;</span><br><span class="line">                preCids[i]=preCids[i].replaceAll(<span class="string">&quot;[()]&quot;</span>,<span class="string">&quot;&quot;</span>);</span><br><span class="line">            &#125;<span class="comment">//去除括号: MA101A MA101B MA103A</span></span><br><span class="line">            <span class="comment">//1.3将pre转为布尔表达式</span></span><br><span class="line">            pre=pre.replace(<span class="string">&quot; AND &quot;</span>,<span class="string">&quot;&amp;&quot;</span>).replace(<span class="string">&quot; OR &quot;</span>,<span class="string">&quot;|&quot;</span>);</span><br><span class="line">            <span class="keyword">for</span> (String preCid : preCids) &#123;</span><br><span class="line">                pre=pre.replace(preCid,passedCids.contains(preCid)?<span class="string">&quot;T&quot;</span>:<span class="string">&quot;F&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//2.计算布尔表达式pre: ((T|F)&amp;T)</span></span><br><span class="line">            <span class="comment">//2.1用逆波兰算法将pre转为后缀表达式postfix: TF|T&amp;</span></span><br><span class="line">            Stack&lt;Character&gt; stack = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line">            <span class="type">StringBuilder</span> <span class="variable">postfix</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">char</span> c : pre.toCharArray()) &#123;</span><br><span class="line">                <span class="keyword">switch</span> (c) &#123;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;(&#x27;</span> -&gt; stack.push(<span class="string">&#x27;(&#x27;</span>);</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;)&#x27;</span> -&gt; &#123;</span><br><span class="line">                        <span class="type">char</span> top;</span><br><span class="line">                        <span class="keyword">while</span> ((top = stack.pop()) != <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                            postfix.append(top);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;&amp;&#x27;</span> -&gt; &#123;</span><br><span class="line">                        <span class="keyword">if</span> (!stack.isEmpty() &amp;&amp; stack.peek() == <span class="string">&#x27;&amp;&#x27;</span>) &#123;</span><br><span class="line">                            postfix.append(stack.pop());</span><br><span class="line">                        &#125;</span><br><span class="line">                        stack.push(<span class="string">&#x27;&amp;&#x27;</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;|&#x27;</span> -&gt; &#123;</span><br><span class="line">                        <span class="keyword">if</span> (!stack.isEmpty() &amp;&amp; stack.peek() == <span class="string">&#x27;&amp;&#x27;</span>) &#123;</span><br><span class="line">                            postfix.append(stack.pop());</span><br><span class="line">                        &#125;</span><br><span class="line">                        <span class="keyword">if</span> (!stack.isEmpty() &amp;&amp; stack.peek() == <span class="string">&#x27;|&#x27;</span>) &#123;</span><br><span class="line">                            postfix.append(stack.pop());</span><br><span class="line">                        &#125;</span><br><span class="line">                        stack.push(<span class="string">&#x27;|&#x27;</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">default</span> -&gt; postfix.append(c);<span class="comment">//对应于T,F</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span> (!stack.isEmpty())&#123;</span><br><span class="line">                postfix.append(stack.pop());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//2.2用栈计算后缀表达式postfix: TF|T&amp;</span></span><br><span class="line">            Stack&lt;Boolean&gt; stack2 = <span class="keyword">new</span> <span class="title class_">Stack</span>&lt;&gt;();</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">char</span> c : postfix.toString().toCharArray()) &#123;</span><br><span class="line">                <span class="keyword">switch</span> (c)&#123;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;|&#x27;</span> -&gt; stack2.push(stack2.pop() | stack2.pop());</span><br><span class="line">                    <span class="comment">//注意这里不能用||，否则可能只pop一个，出现bug</span></span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;&amp;&#x27;</span> -&gt; stack2.push(stack2.pop() &amp; stack2.pop());</span><br><span class="line">                    <span class="comment">//注意这里不能用&amp;&amp;，否则可能只pop一个，出现bug</span></span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;T&#x27;</span> -&gt; stack2.push(<span class="literal">true</span>);</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">&#x27;F&#x27;</span> -&gt; stack2.push(<span class="literal">false</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> stack2.pop();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            System.exit(<span class="number">1</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="用synchonized解决updateLeftCapacity-的并发问题"><a href="#用synchonized解决updateLeftCapacity-的并发问题" class="headerlink" title="用synchonized解决updateLeftCapacity()的并发问题"></a>用synchonized解决updateLeftCapacity()的并发问题</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">updateLeftCapacity</span><span class="params">(Connection con,<span class="type">int</span> sectionId,<span class="type">boolean</span> isAdd)</span> <span class="keyword">throws</span> SQLException&#123;</span><br><span class="line">       <span class="comment">//isAdd为true: left_capacity--</span></span><br><span class="line">       <span class="comment">//isAdd为false: left_capacity++</span></span><br><span class="line">       String addSql= <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">               update section</span></span><br><span class="line"><span class="string">               set left_capacity=(</span></span><br><span class="line"><span class="string">                       select left_capacity</span></span><br><span class="line"><span class="string">                       from section</span></span><br><span class="line"><span class="string">                       where id=?</span></span><br><span class="line"><span class="string">                   )-1</span></span><br><span class="line"><span class="string">               where id=?&quot;&quot;&quot;</span>;</span><br><span class="line">       String dropSql= <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">               update section</span></span><br><span class="line"><span class="string">               set left_capacity=(</span></span><br><span class="line"><span class="string">                       select left_capacity</span></span><br><span class="line"><span class="string">                       from section</span></span><br><span class="line"><span class="string">                       where id=?</span></span><br><span class="line"><span class="string">                   )+1</span></span><br><span class="line"><span class="string">               where id=?&quot;&quot;&quot;</span>;</span><br><span class="line">       PreparedStatement ps;</span><br><span class="line">       <span class="keyword">if</span>(isAdd)&#123;ps=con.prepareStatement(addSql);&#125;</span><br><span class="line">       <span class="keyword">else</span>&#123;ps=con.prepareStatement(dropSql);&#125;</span><br><span class="line">       ps.setInt(<span class="number">1</span>,sectionId);</span><br><span class="line">       ps.setInt(<span class="number">2</span>,sectionId);</span><br><span class="line">       ps.executeUpdate();</span><br><span class="line">       ps.close();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="做project过程中的收获"><a href="#做project过程中的收获" class="headerlink" title="做project过程中的收获"></a>做project过程中的收获</h3><ul>
+<li><h4 id="Git的使用"><a href="#Git的使用" class="headerlink" title="Git的使用"></a>Git的使用</h4></li>
+</ul>
+<p>本次项目中，我们小组为了方便合作及代码分工，每个组员都学习了Git的有关知识，并且在GitHub上创建了仓库，通过IDEA的Git集成，可以很方便的同步代码</p>
+<img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/image-20211230185526812-16408617305821.png">
+
+<ul>
+<li><h4 id="JDBC的进一步理解和应用"><a href="#JDBC的进一步理解和应用" class="headerlink" title="JDBC的进一步理解和应用"></a>JDBC的进一步理解和应用</h4></li>
+</ul>
+<p>在project1中，虽然我们也用到了JDBC的方式来连接并使用数据库，但仅仅局限于简单的数据插入和查找，格式固定，自动化程度低，无法满足大量不同数据同时插入、查找及更新。而在本次project中，逐个实现不同的service，不同的方法，让数据的增删改查都流程化，只需正确使用每一个service，就能很高效地向数据库中插入数据。</p>
+<ul>
+<li><h4 id="Util封装"><a href="#Util封装" class="headerlink" title="Util封装"></a>Util封装</h4></li>
+</ul>
+<p>当很多不同的方法需要使用同样的增删改查操作时，我们学会了用Util类将这些多次使用的方法进行封装。能很大程度上提升代码的简洁性和易读性，并且能减少因为逻辑错误而产生bug的风险。</p>
+<ul>
+<li><h4 id="用流处理数据"><a href="#用流处理数据" class="headerlink" title="用流处理数据"></a>用流处理数据</h4></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/01/03/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6Project%E6%8A%A5%E5%91%8A/" rel="prev" title="离散数学(CS201)期末Project报告">
+      <i class="fa fa-chevron-left"></i> 离散数学(CS201)期末Project报告
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/" rel="next" title="计算机网络(CS305)期末Project报告">
+      计算机网络(CS305)期末Project报告 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E6%A0%BC%E7%BB%93%E6%9E%84%E5%8F%8A%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">表格结构及设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.2.</span> <span class="nav-text">设计</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%8F%92%E5%85%A5%E5%92%8C%E6%9F%A5%E8%AF%A2"><span class="nav-number">2.</span> <span class="nav-text">实现插入和查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD-amp-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">性能 &amp; 性能分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Resource-Consumption"><span class="nav-number">3.1.</span> <span class="nav-text">Resource Consumption</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Speed-and-Correctness"><span class="nav-number">3.2.</span> <span class="nav-text">Speed and Correctness</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Concurrency"><span class="nav-number">3.3.</span> <span class="nav-text">Concurrency</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">特点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%B5%81%E8%BF%9B%E8%A1%8CsearchCourse-%E7%9A%84%E7%AD%9B%E9%80%89"><span class="nav-number">4.1.</span> <span class="nav-text">用流进行searchCourse()的筛选</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E9%80%86%E6%B3%A2%E5%85%B0%E7%AE%97%E6%B3%95%E5%A4%84%E7%90%86%E5%85%88%E4%BF%AE%E8%AF%BEstring"><span class="nav-number">4.2.</span> <span class="nav-text">用逆波兰算法处理先修课string</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8synchonized%E8%A7%A3%E5%86%B3updateLeftCapacity-%E7%9A%84%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98"><span class="nav-number">4.3.</span> <span class="nav-text">用synchonized解决updateLeftCapacity()的并发问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%9Aproject%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E6%94%B6%E8%8E%B7"><span class="nav-number">5.</span> <span class="nav-text">做project过程中的收获</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Git%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">5.1.</span> <span class="nav-text">Git的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JDBC%E7%9A%84%E8%BF%9B%E4%B8%80%E6%AD%A5%E7%90%86%E8%A7%A3%E5%92%8C%E5%BA%94%E7%94%A8"><span class="nav-number">5.2.</span> <span class="nav-text">JDBC的进一步理解和应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Util%E5%B0%81%E8%A3%85"><span class="nav-number">5.3.</span> <span class="nav-text">Util封装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%B5%81%E5%A4%84%E7%90%86%E6%95%B0%E6%8D%AE"><span class="nav-number">5.4.</span> <span class="nav-text">用流处理数据</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">WLQ</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WLQ</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
