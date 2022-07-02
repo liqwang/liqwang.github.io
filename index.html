@@ -146,6 +146,79 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/06/18/Docker+Nginx%E9%83%A8%E7%BD%B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WLQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WLQ's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/06/18/Docker+Nginx%E9%83%A8%E7%BD%B2/" class="post-title-link" itemprop="url">Docker+Nginx部署总结</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-06-18 10:54:30" itemprop="dateCreated datePublished" datetime="2022-06-18T10:54:30+08:00">2022-06-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-06-19 01:23:08" itemprop="dateModified" datetime="2022-06-19T01:23:08+08:00">2022-06-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DevOps/" itemprop="url" rel="index"><span itemprop="name">DevOps</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
     <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/06/17/%E8%AE%A1%E7%BD%91%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -202,7 +275,6 @@
 <p>数据报 datagram</p>
 <p>帧 frame</p>
 <p>.<img src="/2022/06/17/%E8%AE%A1%E7%BD%91%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/image-20220606165651280.png" alt="image-20220606165651280" style="zoom:67%;"></p>
-<p>.<img src="/2022/06/17/%E8%AE%A1%E7%BD%91%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/image-20220608115751782.png" alt="image-20220608115751782" style="zoom: 50%;"></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/06/17/%E8%AE%A1%E7%BD%91%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/#more" rel="contents">
@@ -287,34 +359,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0 link 200000</span><br><span class="line">20 link 20000</span><br><span class="line">20 link 1000</span><br><span class="line">20 link 200</span><br></pre></td></tr></table></figure>
 
 <p>In the event file, we make the bandwidth decrease every 20s, so the network becomes more congested.</p>
-<h2 id="Smoothness"><a href="#Smoothness" class="headerlink" title="Smoothness"></a>Smoothness</h2><table>
-<thead>
-<tr>
-<th align="center"></th>
-<th align="center">onelink</th>
-<th align="center">twolink</th>
-<th align="center">sharelink</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">α&#x3D;0.1</td>
-<td align="center"><img src="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/image-20220531225519275.png" alt="image-20220531225519275" style="zoom:50%;"></td>
-<td align="center"><img src="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/image-20220531232042267.png" alt="image-20220531232042267" style="zoom:50%;"></td>
-<td align="center"><img src="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/image-20220531232101741.png" alt="image-20220531232101741" style="zoom:50%;"></td>
-</tr>
-<tr>
-<td align="center">α&#x3D;0.5</td>
-<td align="center"><img src="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/image-20220531232121011.png" alt="image-20220531232121011" style="zoom:50%;"></td>
-<td align="center"><img src="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/image-20220531232427787.png" alt="image-20220531232427787" style="zoom:50%;"></td>
-<td align="center"><img src="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/image-20220531232446774.png" alt="image-20220531232446774" style="zoom:50%;"></td>
-</tr>
-<tr>
-<td align="center">α&#x3D;0.9</td>
-<td align="center"><img src="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/image-20220531232504160.png" alt="image-20220531232504160" style="zoom:50%;"></td>
-<td align="center"><img src="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/image-20220601123426232.png" alt="image-20220601123426232" style="zoom:50%;"></td>
-<td align="center"><img src="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/image-20220531232550156.png" alt="image-20220531232550156" style="zoom:50%;"></td>
-</tr>
-</tbody></table>
+<h2 id="Smoothness"><a href="#Smoothness" class="headerlink" title="Smoothness"></a>Smoothness</h2>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/#more" rel="contents">
@@ -372,7 +417,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-17 23:21:23" itemprop="dateModified" datetime="2021-05-17T23:21:23+08:00">2021-05-17</time>
+                <time title="修改时间：2022-05-17 23:21:23" itemprop="dateModified" datetime="2022-05-17T23:21:23+08:00">2022-05-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -407,7 +452,6 @@
 </li>
 </ul>
 <p>The architecture of the project is <strong>Vue + SpringBoot</strong>. The development of frontend and backend are splited, and as a result any of them can work separately. The interaction between the frontend and the backend are achieved through Rest API, and we use <strong>Json</strong> as the data exchange format.</p>
-<p>In this report, we will introduce the features related to the evaluation and the structure of this project.</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/#more" rel="contents">
@@ -434,7 +478,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
-    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/04/21/%E9%94%AE%E7%9B%98%E6%95%B2%E5%85%A5%E5%AD%97%E7%AC%A6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -448,7 +492,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/" class="post-title-link" itemprop="url">数据库原理(CS307)Project2报告</a>
+            <a href="/2022/04/21/%E9%94%AE%E7%9B%98%E6%95%B2%E5%85%A5%E5%AD%97%E7%AC%A6/" class="post-title-link" itemprop="url">键盘敲入字符后，操作系统发生了什么?</a>
         </h2>
 
         <div class="post-meta">
@@ -457,23 +501,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-01-05 19:45:50" itemprop="dateCreated datePublished" datetime="2022-01-05T19:45:50+08:00">2022-01-05</time>
+              <time title="创建时间：2022-04-21 09:02:33 / 修改时间：12:01:25" itemprop="dateCreated datePublished" datetime="2022-04-21T09:02:33+08:00">2022-04-21</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-01-09 13:05:06" itemprop="dateModified" datetime="2022-01-09T13:05:06+08:00">2022-01-09</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
                 </span>
             </span>
 
@@ -488,13 +526,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="表格结构及设计"><a href="#表格结构及设计" class="headerlink" title="表格结构及设计"></a>表格结构及设计</h3><h4 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h4><img src="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/QQ图片20211230121112.png">
-
-<p>共建立了10张表，其中department,major,student,course,section,section_class,instructor,semester均为储存数据的单表，major_course，student_section是多对多的关系表。</p>
-<h4 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h4><p>系统主要分为两部分，一部分主体为课程，另一部分主体为同学，两部分与其基本信息共同构成整个关系库。表格依据需要实现接口原则，基本复原dto文件夹中的class，其中CourseSearchEntry,CourseTable为查询更新操作，不建表。User对应instructor和student两部分。基本将每个class中的成员变量转化为列储存，部分引用类型成员变量需要转化储存为基本类型。如下：</p>
+          <p>文章 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/195701027">https://zhuanlan.zhihu.com/p/195701027</a> 的学习笔记</p>
+<h3 id="设备控制器"><a href="#设备控制器" class="headerlink" title="设备控制器"></a>设备控制器</h3><p>为了屏蔽设备之间的差异，每个设备都有一个叫<strong>设备控制器（Device Control）</strong> 的组件</p>
+<p>.<img src="/2022/04/21/%E9%94%AE%E7%9B%98%E6%95%B2%E5%85%A5%E5%AD%97%E7%AC%A6/image-20220215233836070.png" alt="image-20220215233836070" style="zoom: 67%;"></p>
+<p>控制器有三个寄存器：</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/#more" rel="contents">
+              <a class="btn" href="/2022/04/21/%E9%94%AE%E7%9B%98%E6%95%B2%E5%85%A5%E5%AD%97%E7%AC%A6/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -518,7 +556,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
-    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/01/03/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6Project%E6%8A%A5%E5%91%8A/">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/04/15/%E5%85%AD%E7%A7%8D%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -532,7 +570,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/01/03/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6Project%E6%8A%A5%E5%91%8A/" class="post-title-link" itemprop="url">离散数学(CS201)期末Project报告</a>
+            <a href="/2022/04/15/%E5%85%AD%E7%A7%8D%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">六种进程间通信方式</a>
         </h2>
 
         <div class="post-meta">
@@ -541,8 +579,9 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2022-01-03 13:45:09" itemprop="dateCreated datePublished" datetime="2022-01-03T13:45:09+08:00">2022-01-03</time>
+              <time title="创建时间：2022-04-15 09:05:33 / 修改时间：16:51:21" itemprop="dateCreated datePublished" datetime="2022-04-15T09:05:33+08:00">2022-04-15</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -550,7 +589,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82/" itemprop="url" rel="index"><span itemprop="name">杂</span></a>
+                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
                 </span>
             </span>
 
@@ -565,18 +604,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <div style="text-align: center;"><span style="font-size: 200%; "><b>Knight's Tour Problem</b></span></div>
+          <p>文章 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/165224175">https://zhuanlan.zhihu.com/p/165224175</a> 的学习笔记</p>
+<p>每个进程的⽤户地址空间都是独立的，⼀般而言是不能互相访问的，但<strong>内核</strong>空间是每个进程都共享的，所以进程之间要通信必须通过内核。</p>
+<img src="/2022/04/15/%E5%85%AD%E7%A7%8D%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/image-20220211154310200.png" alt="image-20220211154310200" style="zoom: 67%;">
 
-
-
-<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h2><p>Knight’s tour problem is a special case of Travelling Salesman Problem(TSP) or Hamiltonian Cycle Problem(HCP).[1]</p>
-<p>The problem is that, on a chessboard, the knight needs to jump over the entire chessboard, only one jump per grid, and finally return to the starting point.</p>
-<img src="/2022/01/03/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6Project%E6%8A%A5%E5%91%8A/image-20220115164807002.png" alt="image-20220115164807002" style="zoom: 40%;">
-
-<h2 id="2-Solution"><a href="#2-Solution" class="headerlink" title="2. Solution"></a>2. Solution</h2>
+<h3 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h3><p>【本质】<strong>内核</strong>里的一串<strong>缓存</strong></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/01/03/%E7%A6%BB%E6%95%A3%E6%95%B0%E5%AD%A6Project%E6%8A%A5%E5%91%8A/#more" rel="contents">
+              <a class="btn" href="/2022/04/15/%E5%85%AD%E7%A7%8D%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -600,7 +635,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
-    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2021/12/23/%E6%95%B0%E5%AD%97%E9%80%BB%E8%BE%91Project%E6%8A%A5%E5%91%8A/">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -614,7 +649,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/12/23/%E6%95%B0%E5%AD%97%E9%80%BB%E8%BE%91Project%E6%8A%A5%E5%91%8A/" class="post-title-link" itemprop="url">数字逻辑(CS207)期末Project报告</a>
+            <a href="/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">DNS学习</a>
         </h2>
 
         <div class="post-meta">
@@ -624,14 +659,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2021-12-23 10:56:33" itemprop="dateCreated datePublished" datetime="2021-12-23T10:56:33+08:00">2021-12-23</time>
+              <time title="创建时间：2022-03-05 10:54:30" itemprop="dateCreated datePublished" datetime="2022-03-05T10:54:30+08:00">2022-03-05</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-12-26 11:50:01" itemprop="dateModified" datetime="2021-12-26T11:50:01+08:00">2021-12-26</time>
+                <time title="修改时间：2022-05-15 01:23:08" itemprop="dateModified" datetime="2022-05-15T01:23:08+08:00">2022-05-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -639,7 +674,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82/" itemprop="url" rel="index"><span itemprop="name">杂</span></a>
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
                 </span>
             </span>
 
@@ -654,12 +689,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="1-开发计划"><a href="#1-开发计划" class="headerlink" title="1.开发计划"></a>1.开发计划</h2><h3 id="小组选题"><a href="#小组选题" class="headerlink" title="小组选题"></a>小组选题</h3><p>FPGA x 摩斯电码</p>
-<h3 id="进度安排-amp-执行记录"><a href="#进度安排-amp-执行记录" class="headerlink" title="进度安排 &amp; 执行记录"></a>进度安排 &amp; 执行记录</h3><p>week 11 确定选题以及分工 (按时执行)<br>week 12 确定模块数量以及需要的输入输出端口 (按时执行)<br>week 13 确定状态迁移图 (按时执行)<br>week 14 各成员分别着手各自模块的初步开发 (未按时完成)<br>week 15 继续分别开发模块,debug,汇总输入输出的端口,并完成约束文件的编写 (按时执行)<br>week 16 着手编写报告 (按时执行)</p>
-<h2 id="2-设计"><a href="#2-设计" class="headerlink" title="2.设计"></a>2.设计</h2>
+          <p>DNS为<strong>应用层</strong>协议，其下层为<strong>UDP</strong></p>
+<p>域名结构树👇</p>
+<p>.<img src="/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220321110814107.png" alt="image-20220321110814107" style="zoom: 25%;"></p>
+<ul>
+<li>根域名服务器(Root Server): <strong>.</strong></li>
+<li>顶级域名服务器(Top Level Domain, TLD): 分为两个主要组<ul>
+<li>通用顶级域：非特定国家&#x2F;地区的域，最知名的通用 TLD 包括 com, org, net, edu, gov</li>
+<li>国家&#x2F;地区顶级域：特定于某个国家&#x2F;地区或州的域，如uk, us, ru, jp</li>
+</ul>
+</li>
+<li>权威域名服务器(Authoritative): bilibili, qq, baidu</li>
+</ul>
+<h3 id="递归查询-amp-迭代查询"><a href="#递归查询-amp-迭代查询" class="headerlink" title="递归查询&amp;迭代查询"></a>递归查询&amp;迭代查询</h3>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/12/23/%E6%95%B0%E5%AD%97%E9%80%BB%E8%BE%91Project%E6%8A%A5%E5%91%8A/#more" rel="contents">
+              <a class="btn" href="/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -683,7 +728,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
-    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2021/01/05/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/02/20/TCP%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -697,7 +742,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/01/05/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/" class="post-title-link" itemprop="url">Hexo博客搭建记录</a>
+            <a href="/2022/02/20/TCP%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="post-title-link" itemprop="url">TCP的性能优化</a>
         </h2>
 
         <div class="post-meta">
@@ -706,23 +751,17 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-01-05 19:45:50" itemprop="dateCreated datePublished" datetime="2021-01-05T19:45:50+08:00">2021-01-05</time>
+              <time title="创建时间：2022-02-20 09:19:12 / 修改时间：23:52:54" itemprop="dateCreated datePublished" datetime="2022-02-20T09:19:12+08:00">2022-02-20</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-01-09 13:05:06" itemprop="dateModified" datetime="2021-01-09T13:05:06+08:00">2021-01-09</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9D%82/" itemprop="url" rel="index"><span itemprop="name">杂</span></a>
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
                 </span>
             </span>
 
@@ -737,14 +776,172 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="Step1-生成基本框架"><a href="#Step1-生成基本框架" class="headerlink" title="Step1: 生成基本框架"></a>Step1: 生成基本框架</h2><p>先照着程序🐏的视频做<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Yb411a7ty">https://www.bilibili.com/video/BV1Yb411a7ty</a></p>
-<p>【踩坑1】注意仓库<strong>创建时</strong>就要设为public，设置成private会失败</p>
-<p>域名强制小写，所以Github名字中的大写字母会转为小写</p>
-<p>最后得到一个域名为<code>&lt;Github名字&gt;.github.io</code>的博客，但是<strong>无法插入图片</strong>并且<strong>无法渲染数学公式</strong></p>
-<h2 id="Step2-切换域名"><a href="#Step2-切换域名" class="headerlink" title="Step2: 切换域名"></a>Step2: 切换域名</h2>
+          <p>文章 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&amp;mid=2247484774&amp;idx=1&amp;sn=fa9e67e60c5f9d2e9d2aa6ea8ab2a441">https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&amp;mid=2247484774&amp;idx=1&amp;sn=fa9e67e60c5f9d2e9d2aa6ea8ab2a441</a> 的学习笔记</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/02/18/TCP%E7%9A%84%E5%9B%9B%E5%A4%A7%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WLQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WLQ's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/18/TCP%E7%9A%84%E5%9B%9B%E5%A4%A7%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">TCP的四大机制</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-18 09:17:32" itemprop="dateCreated datePublished" datetime="2022-02-18T09:17:32+08:00">2022-02-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-02-19 23:01:09" itemprop="dateModified" datetime="2022-02-19T23:01:09+08:00">2022-02-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>文章 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&amp;mid=2247484017&amp;idx=1&amp;sn=dc54d43bfd5dc088e48adcfa2e2bc13f">https://mp.weixin.qq.com/s?__biz=MzUxODAzNDg4NQ==&amp;mid=2247484017&amp;idx=1&amp;sn=dc54d43bfd5dc088e48adcfa2e2bc13f</a> 的学习笔记</p>
+<h3 id="重传机制"><a href="#重传机制" class="headerlink" title="重传机制"></a>重传机制</h3><p>.<img src="/2022/02/18/TCP%E7%9A%84%E5%9B%9B%E5%A4%A7%E6%9C%BA%E5%88%B6/image-20220317191648427.png" alt="image-20220317191648427" style="zoom: 50%;"></p>
+<p>重传机制基于<strong>序列号</strong></p>
+<h4 id="超时重传"><a href="#超时重传" class="headerlink" title="超时重传"></a>超时重传</h4>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/01/05/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AE%B0%E5%BD%95/#more" rel="contents">
+              <a class="btn" href="/2022/02/18/TCP%E7%9A%84%E5%9B%9B%E5%A4%A7%E6%9C%BA%E5%88%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/02/16/TCP%E7%9A%84%E4%B8%89%E6%8F%A1%E5%9B%9B%E6%8C%A5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WLQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WLQ's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/02/16/TCP%E7%9A%84%E4%B8%89%E6%8F%A1%E5%9B%9B%E6%8C%A5/" class="post-title-link" itemprop="url">TCP的三握四挥</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-16 09:14:30" itemprop="dateCreated datePublished" datetime="2022-02-16T09:14:30+08:00">2022-02-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-02-17 23:21:04" itemprop="dateModified" datetime="2022-02-17T23:21:04+08:00">2022-02-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>文章 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/472361432">https://zhuanlan.zhihu.com/p/472361432</a> 的学习笔记</p>
+<p>TCP是<strong>面向连接的、可靠的、基于字节流</strong>的传输层通信协议</p>
+<p>面向连接：只能一对一，不能一对多</p>
+<p>TCP的连接是通过<strong>四元组</strong>唯一确认的：<strong>源IP、目标IP、源端口、目标端口</strong></p>
+<h2 id="TCP和UDP的区别"><a href="#TCP和UDP的区别" class="headerlink" title="TCP和UDP的区别"></a>TCP和UDP的区别</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/02/16/TCP%E7%9A%84%E4%B8%89%E6%8F%A1%E5%9B%9B%E6%8C%A5/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -766,6 +963,9 @@
 
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
 
 
 
@@ -830,12 +1030,12 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">分类</span>
       </div>
   </nav>

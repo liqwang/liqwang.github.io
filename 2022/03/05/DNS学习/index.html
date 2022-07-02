@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN,en,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.quanquancho.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="DNS为应用层协议，其下层为UDP 域名结构树👇 .  根域名服务器(Root Server): . 顶级域名服务器(Top Level Domain, TLD): 分为两个主要组 通用顶级域：非特定国家&#x2F;地区的域，最知名的通用 TLD 包括 com, org, net, edu, gov 国家&#x2F;地区顶级域：特定于某个国家&#x2F;地区或州的域，如uk, us, ru, j">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DNS学习">
+<meta property="og:url" content="https://blog.quanquancho.com/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/">
+<meta property="og:site_name" content="WLQ&#39;s Blog">
+<meta property="og:description" content="DNS为应用层协议，其下层为UDP 域名结构树👇 .  根域名服务器(Root Server): . 顶级域名服务器(Top Level Domain, TLD): 分为两个主要组 通用顶级域：非特定国家&#x2F;地区的域，最知名的通用 TLD 包括 com, org, net, edu, gov 国家&#x2F;地区顶级域：特定于某个国家&#x2F;地区或州的域，如uk, us, ru, j">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220321110814107.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220325194831832.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220322110255876-16567691049928.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220325185407315.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220325185635837.png">
+<meta property="article:published_time" content="2022-03-05T02:54:30.000Z">
+<meta property="article:modified_time" content="2022-05-14T17:23:08.000Z">
+<meta property="article:author" content="WLQ">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.quanquancho.com/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220321110814107.png">
+
+<link rel="canonical" href="https://blog.quanquancho.com/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>DNS学习 | WLQ's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WLQ's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WLQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WLQ's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          DNS学习
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-03-05 10:54:30" itemprop="dateCreated datePublished" datetime="2022-03-05T10:54:30+08:00">2022-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-05-15 01:23:08" itemprop="dateModified" datetime="2022-05-15T01:23:08+08:00">2022-05-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>DNS为<strong>应用层</strong>协议，其下层为<strong>UDP</strong></p>
+<p>域名结构树👇</p>
+<p>.<img src="/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220321110814107.png" alt="image-20220321110814107" style="zoom: 25%;"></p>
+<ul>
+<li>根域名服务器(Root Server): <strong>.</strong></li>
+<li>顶级域名服务器(Top Level Domain, TLD): 分为两个主要组<ul>
+<li>通用顶级域：非特定国家&#x2F;地区的域，最知名的通用 TLD 包括 com, org, net, edu, gov</li>
+<li>国家&#x2F;地区顶级域：特定于某个国家&#x2F;地区或州的域，如uk, us, ru, jp</li>
+</ul>
+</li>
+<li>权威域名服务器(Authoritative): bilibili, qq, baidu</li>
+</ul>
+<h3 id="递归查询-amp-迭代查询"><a href="#递归查询-amp-迭代查询" class="headerlink" title="递归查询&amp;迭代查询"></a>递归查询&amp;迭代查询</h3><p>.→com→server.com→<a target="_blank" rel="noopener" href="http://www.server.com/">www.server.com</a></p>
+<ol>
+<li>客户端首先会询问本地服务器(客户端的设置中填写的DNS服务器地址)，收到请求后从缓存里找，如果没有，会去问根服务器</li>
+<li>如果没有缓存，本地服务器会去问根服务器，它会提供com顶级服务器的IP地址</li>
+<li>本地服务器接着询问顶级服务器，获得了server.com的权威服务器的IP地址</li>
+<li>本地服务器接着询问顶级服务器，获得了<a target="_blank" rel="noopener" href="http://www.server.com的ip地址/">www.server.com的IP地址</a></li>
+<li>本地服务器再将IP地址返回客户端，客户端和服务器建立连接</li>
+</ol>
+<p>本地DNS服务器又叫做DNS解析器(resolver)，因为它通过递归查询直接返回最终IP地址</p>
+<p><strong>递归查询</strong>：必须给出最终的IP地址，当缓存中没有最终IP时，需要<strong>亲自</strong>向能查询到最终结果的DNS服务器查询</p>
+<p><strong>迭代查询</strong>：不用给出最终的IP地址，当缓存中没有最终IP时，给出能查询到最终结果的DNS服务器地址</p>
+<p>.<img src="/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220325194831832.png" alt="image-20220325194831832" style="zoom:67%;"></p>
+<p>下图均为递归查询👇</p>
+<p>.<img src="/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220322110255876-16567691049928.png" alt="image-20220322110255876" style="zoom:40%;"></p>
+<p>Cloudflare的优质中文学习资源：<a target="_blank" rel="noopener" href="https://www.cloudflare.com/zh-cn/learning/dns/what-is-dns/">https://www.cloudflare.com/zh-cn/learning/dns/what-is-dns/</a></p>
+<p>更多云&amp;网络相关的资源：<a target="_blank" rel="noopener" href="https://www.cloudflare.com/zh-cn%E2%86%92%E5%85%A5%E9%97%A8%E2%86%92%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%BF%83">https://www.cloudflare.com/zh-cn→入门→学习中心</a></p>
+<h3 id="DNS报文"><a href="#DNS报文" class="headerlink" title="DNS报文"></a>DNS报文</h3><p>DNS有<strong>查询</strong>和<strong>响应</strong>两种报文</p>
+<p>.<img src="/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220325185407315.png" alt="image-20220325185407315" style="zoom: 67%;"></p>
+<p>Flags👇</p>
+<p>.<img src="/2022/03/05/DNS%E5%AD%A6%E4%B9%A0/image-20220325185635837.png" alt="image-20220325185635837" style="zoom:80%;"></p>
+<ul>
+<li><p><code>QR(Response)</code>: 标识报文类型：查询报文 QR &#x3D; 0，响应报文 QR &#x3D; 1</p>
+</li>
+<li><p><code>OpCode</code>: 操作码，其中 0表示标准查询，1表示反向查询，2表示服务器状态请求</p>
+</li>
+<li><p><code>AA(Authoritative)</code>: 只在<strong>响应报文</strong>中有效， 表示响应服务器是否为权威服务器</p>
+</li>
+<li><p><code>TC(Truncated)</code>: 截断标志位，1表示响应已超过 512 字节并且已经被截断，只返回前 512 个字节</p>
+</li>
+<li><p><code>RD(Recursion Desired)</code>: 是否为递归查询，该标志在查询中设置，并在响应中返回</p>
+</li>
+<li><p><code>RA(Recursion Available)</code>: 只出现在<strong>响应报文</strong>中，表示服务器是否支持递归查询</p>
+</li>
+<li><p><code>Z(zero)</code>: 保留字段，在所有的请求和应答报文中，它的值必须为 0</p>
+</li>
+<li><p><code>AD</code>: 表示信息是否是已授权</p>
+</li>
+<li><p><code>CD</code>: 表示是否禁用安全检查</p>
+</li>
+<li><p><code>RCODE(Reply code)</code>：返回码标志，表示<strong>响应报文</strong>的状态</p>
+<p>0 表示没有错误</p>
+<p>1 表示报文格式错误(Format error)，服务器不能理解请求的报文</p>
+<p>2 表示域名服务器失败(Server failure)，因为服务器的原因导致没办法处理这个请求</p>
+<p>3 表示名称错误(Name Error)，意为解析的域名不存在，只对授权域名解析服务器有意义</p>
+<p>4 表示查询类型不支持(Not Implemented)，即域名服务器不支持查询类型</p>
+<p>5 表示拒绝(Refused)，一般是由于服务器设置的策略拒绝给出应答</p>
+</li>
+</ul>
+<p>回答区域、授权区域、附加区域均由许多条<strong>RR</strong>组成</p>
+<p>缓存经过TTL(Time to Leave)后会被清除，单位：秒</p>
+<p>顶级服务器的缓存一般存放在本地服务器中，这样可以减少根服务器的负载</p>
+<p>缓存是以<strong>资源记录</strong>(Resource Record, <strong>RR</strong>)的形式分布式存储在DNS中的(????)</p>
+<h3 id="RR"><a href="#RR" class="headerlink" title="RR"></a>RR</h3><p>包括六个字段：Name, Type, Value, TTL, Class, Data length</p>
+<ul>
+<li><p>A记录：A表示Address，保存域的 IPv4 地址</p>
+<table>
+<thead>
+<tr>
+<th align="center">Name</th>
+<th align="center">Type</th>
+<th align="center">Value</th>
+<th align="center">TTL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">example.com</td>
+<td align="center">A</td>
+<td align="center">192.0.2.1</td>
+<td align="center">14400(默认)</td>
+</tr>
+</tbody></table>
+<p>绝大多数网站只有一个 A 记录，但可以有多个</p>
+<p><strong>一些高流量的网站有数个不同的 A 记录，作为<a target="_blank" rel="noopener" href="https://www.cloudflare.com/learning/dns/glossary/round-robin-dns/">循环负载均衡</a>技术的一部分，将请求流量分配到托管相同内容的多个 IP 地址中的一个</strong></p>
+</li>
+<li><p>AAAA记录：保存域名的 IPv6 地址，其余与A记录相同</p>
+</li>
+<li><p>CNAME记录：C表示Canonical(规范的)</p>
+<p>当查询的域名是另一个域的别名时，会返回真正的域名</p>
+<p>别名一般直接指向真名，否则会降低效率</p>
+<table>
+<thead>
+<tr>
+<th align="center">Name</th>
+<th align="center">Type</th>
+<th align="center">Value</th>
+<th align="center">TTL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">blog.example.com</td>
+<td align="center">CNAME</td>
+<td align="center">example.com</td>
+<td align="center">14400(默认)</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>NS记录：NS表示Name Server，指示哪个服务器含有对查询的域名的实际记录，通常会有多个NS记录</p>
+<p>NS记录不能指向CNAME记录</p>
+<table>
+<thead>
+<tr>
+<th align="center">Name</th>
+<th align="center">Type</th>
+<th align="center">Value</th>
+<th align="center">TTL</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">example.com</td>
+<td align="center">NS</td>
+<td align="center">ns1.exampleserver.com</td>
+<td align="center">21600</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+<p>此外还有许多种RR类型，详见Cloudflare官网</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/20/TCP%E7%9A%84%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="prev" title="TCP的性能优化">
+      <i class="fa fa-chevron-left"></i> TCP的性能优化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/04/15/%E5%85%AD%E7%A7%8D%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/" rel="next" title="六种进程间通信方式">
+      六种进程间通信方式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%92%E5%BD%92%E6%9F%A5%E8%AF%A2-amp-%E8%BF%AD%E4%BB%A3%E6%9F%A5%E8%AF%A2"><span class="nav-number">1.</span> <span class="nav-text">递归查询&amp;迭代查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DNS%E6%8A%A5%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">DNS报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RR"><span class="nav-number">3.</span> <span class="nav-text">RR</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">WLQ</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WLQ</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

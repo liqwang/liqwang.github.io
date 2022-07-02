@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN,en,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.quanquancho.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="文章 https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;1yWSfdz0j-PprGkDgOomhQ 的学习笔记 为什么要ConcurrentHashMap?即使JDK1.8的HashMap已经不会出现环形链表，但仍然线程不安全 . 例如，若多个线程同时执行put方法，可能会同时进入第627行的判断条件，发生更新覆盖的情况">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ConcurrentHashMap">
+<meta property="og:url" content="https://blog.quanquancho.com/2021/04/15/ConcurrentHashMap/">
+<meta property="og:site_name" content="WLQ&#39;s Blog">
+<meta property="og:description" content="文章 https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;1yWSfdz0j-PprGkDgOomhQ 的学习笔记 为什么要ConcurrentHashMap?即使JDK1.8的HashMap已经不会出现环形链表，但仍然线程不安全 . 例如，若多个线程同时执行put方法，可能会同时进入第627行的判断条件，发生更新覆盖的情况">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.quanquancho.com/2021/04/15/ConcurrentHashMap/image-20220308104603146.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2021/04/15/ConcurrentHashMap/image-20220220143715205.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2021/04/15/ConcurrentHashMap/image-20220220144022417.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2021/04/15/ConcurrentHashMap/image-20220220144123331.png">
+<meta property="article:published_time" content="2021-04-15T11:04:29.000Z">
+<meta property="article:modified_time" content="2021-04-15T13:47:41.000Z">
+<meta property="article:author" content="WLQ">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.quanquancho.com/2021/04/15/ConcurrentHashMap/image-20220308104603146.png">
+
+<link rel="canonical" href="https://blog.quanquancho.com/2021/04/15/ConcurrentHashMap/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ConcurrentHashMap | WLQ's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WLQ's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2021/04/15/ConcurrentHashMap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WLQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WLQ's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ConcurrentHashMap
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-15 19:04:29 / 修改时间：21:47:41" itemprop="dateCreated datePublished" datetime="2021-04-15T19:04:29+08:00">2021-04-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JUC/" itemprop="url" rel="index"><span itemprop="name">JUC</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>文章 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/1yWSfdz0j-PprGkDgOomhQ">https://mp.weixin.qq.com/s/1yWSfdz0j-PprGkDgOomhQ</a> 的学习笔记</p>
+<h2 id="为什么要ConcurrentHashMap"><a href="#为什么要ConcurrentHashMap" class="headerlink" title="为什么要ConcurrentHashMap?"></a>为什么要ConcurrentHashMap?</h2><p>即使JDK1.8的<code>HashMap</code>已经不会出现环形链表，但仍然线程不安全</p>
+<p>.<img src="/2021/04/15/ConcurrentHashMap/image-20220308104603146.png" alt="image-20220308104603146" style="zoom:80%;"></p>
+<p>例如，若多个线程同时执行<code>put</code>方法，可能会同时进入第627行的判断条件，发生更新覆盖的情况</p>
+<p>解决<code>HashMap</code>的并发问题，可以使用<code>HashTable</code>或<code>Collections.synchronizedMap</code>，但两者在读写时都会对整个集合加锁，性能很低</p>
+<h2 id="什么是ConcurrentHashMap"><a href="#什么是ConcurrentHashMap" class="headerlink" title="什么是ConcurrentHashMap?"></a>什么是ConcurrentHashMap?</h2><p><code>ConcurrentHashMap</code>由大小为$2^n$的segments数组组成，不允许key为null</p>
+<p><code>put</code>和<code>get</code>方法都需要两次定位，利用hash值，先定位到segment，再定位到entry</p>
+<p>.<img src="/2021/04/15/ConcurrentHashMap/image-20220220143715205.png" alt="image-20220220143715205" style="zoom:67%;"></p>
+<p>不同segment的操作互不影响👆</p>
+<p>.<img src="/2021/04/15/ConcurrentHashMap/image-20220220144022417.png" alt="image-20220220144022417" style="zoom:67%;"></p>
+<p>同一segment的读写是并发的👆</p>
+<p>.<img src="/2021/04/15/ConcurrentHashMap/image-20220220144123331.png" alt="image-20220220144123331" style="zoom:67%;"></p>
+<p>同理，同一segment的写写需要阻塞👆</p>
+<h2 id="size-方法如何保证线程安全？"><a href="#size-方法如何保证线程安全？" class="headerlink" title="size()方法如何保证线程安全？"></a>size()方法如何保证线程安全？</h2><p><code>ConcurrentHashMap</code>的<code>size()</code>方法是一个嵌套循环，大体逻辑如下：</p>
+<p>1.遍历所有的Segment</p>
+<p>2.把Segment的元素数量累加起来</p>
+<p>3.把Segment的修改次数累加起来</p>
+<p>4.判断所有Segment的总修改次数是否大于上一次的总修改次数。如果大于，说明统计过程中有修改，重新统计，尝试次数+1；如果不是，说明没有修改，统计结束</p>
+<p>5.如果尝试次数超过阈值，则对每一个Segment加锁，再重新统计</p>
+<p>6.再次判断所有Segment的总修改次数是否大于上一次的总修改次数。由于已经加锁，次数一定和上次相等</p>
+<p>7.释放锁，统计结束</p>
+<p>可以看出，<strong>先是乐观锁，无奈后转为悲观锁</strong></p>
+<h2 id="JDK1-7和1-8的区别"><a href="#JDK1-7和1-8的区别" class="headerlink" title="JDK1.7和1.8的区别"></a>JDK1.7和1.8的区别</h2><table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">JDK1.7</th>
+<th align="center">JDK1.8</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">结构</td>
+<td align="center">ReentrantLock+Segment[]</td>
+<td align="center">synchronized+CAS</td>
+</tr>
+<tr>
+<td align="center">锁粒度</td>
+<td align="center">Segment</td>
+<td align="center">HashEntry</td>
+</tr>
+</tbody></table>
+<p>JDK 1.8 的<code>ConcurrentHashMap</code>不再有 Segment 的概念，不再使用分段锁，而是给数组中的每一个头节点（桶）都加锁，<strong>锁的粒度降低了</strong>,并且用的是 synchronized锁</p>
+<p>其余的区别与JDK1.7和1.8的<code>HashMap</code>相同</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/25/%E8%B7%B3%E8%B7%83%E8%A1%A8/" rel="prev" title="跳跃表">
+      <i class="fa fa-chevron-left"></i> 跳跃表
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/04/21/volatile%E5%85%B3%E9%94%AE%E5%AD%97/" rel="next" title="volatile关键字">
+      volatile关键字 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81ConcurrentHashMap"><span class="nav-number">1.</span> <span class="nav-text">为什么要ConcurrentHashMap?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFConcurrentHashMap"><span class="nav-number">2.</span> <span class="nav-text">什么是ConcurrentHashMap?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#size-%E6%96%B9%E6%B3%95%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">size()方法如何保证线程安全？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JDK1-7%E5%92%8C1-8%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.</span> <span class="nav-text">JDK1.7和1.8的区别</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">WLQ</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WLQ</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
