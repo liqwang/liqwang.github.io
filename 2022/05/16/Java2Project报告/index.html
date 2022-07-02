@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN,en,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.quanquancho.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="使用Docker+Nginx部署于: quanquancho.com&#x2F;java2-project OverviewIn this project, we mainly discuss two major issues:  Hot dependencies in pom.xml   Tool used contribution in different countries     The">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java2(CS209A)期末Project报告">
+<meta property="og:url" content="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/">
+<meta property="og:site_name" content="WLQ&#39;s Blog">
+<meta property="og:description" content="使用Docker+Nginx部署于: quanquancho.com&#x2F;java2-project OverviewIn this project, we mainly discuss two major issues:  Hot dependencies in pom.xml   Tool used contribution in different countries     The">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220525162622256.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220525162657598.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220525162738565.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220523211104329.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220523212251799.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220523211717048.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220523212133552.png">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220522220830677.png">
+<meta property="article:published_time" content="2022-05-16T02:56:41.000Z">
+<meta property="article:modified_time" content="2021-05-17T15:21:23.000Z">
+<meta property="article:author" content="WLQ">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220525162622256.png">
+
+<link rel="canonical" href="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Java2(CS209A)期末Project报告 | WLQ's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WLQ's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WLQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WLQ's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java2(CS209A)期末Project报告
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-16 10:56:41" itemprop="dateCreated datePublished" datetime="2022-05-16T10:56:41+08:00">2022-05-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-17 23:21:23" itemprop="dateModified" datetime="2021-05-17T23:21:23+08:00">2021-05-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82/" itemprop="url" rel="index"><span itemprop="name">杂</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>使用Docker+Nginx部署于: quanquancho.com&#x2F;java2-project</p>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>In this project, we mainly discuss two major issues:</p>
+<ul>
+<li><p>Hot dependencies in pom.xml</p>
+<p><img src="/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220525162622256.png" alt="image-20220525162622256"></p>
+</li>
+<li><p>Tool used contribution in different countries</p>
+<p><img src="/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220525162657598.png" alt="image-20220525162657598"></p>
+<p><img src="/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220525162738565.png" alt="image-20220525162738565"></p>
+</li>
+</ul>
+<p>The architecture of the project is <strong>Vue + SpringBoot</strong>. The development of frontend and backend are splited, and as a result any of them can work separately. The interaction between the frontend and the backend are achieved through Rest API, and we use <strong>Json</strong> as the data exchange format.</p>
+<p>In this report, we will introduce the features related to the evaluation and the structure of this project.</p>
+<h2 id="Project-Structure"><a href="#Project-Structure" class="headerlink" title="Project Structure"></a>Project Structure</h2><h2 id="Frontend"><a href="#Frontend" class="headerlink" title="Frontend"></a>Frontend</h2><p>File tree</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">│   .browserslistrc</span><br><span class="line">│   .gitignore</span><br><span class="line">│   babel.config.js</span><br><span class="line">│   jsconfig.json</span><br><span class="line">│   LICENSE</span><br><span class="line">│   package-lock.json</span><br><span class="line">│   package.json</span><br><span class="line">│   postcss.config.js</span><br><span class="line">│   preview.png</span><br><span class="line">│   Java2Project报告.md</span><br><span class="line">│   tailwind.config.js</span><br><span class="line">│   vue.config.js</span><br><span class="line">│   yarn.lock</span><br><span class="line">│</span><br><span class="line">├───public</span><br><span class="line">│       .htaccess</span><br><span class="line">│       favicon.ico</span><br><span class="line">│       index.html</span><br><span class="line">│       web.config</span><br><span class="line">│       _redirects</span><br><span class="line">│</span><br><span class="line">└───src</span><br><span class="line">    │   App.vue</span><br><span class="line">    │   main.js</span><br><span class="line">    │</span><br><span class="line">    ├───assets</span><br><span class="line">    │   │   animate.css</span><br><span class="line">    │   │   logo.png</span><br><span class="line">    │   │   tailwind.css</span><br><span class="line">    │   │</span><br><span class="line">    │   ├───img</span><br><span class="line">    │   │       user.jpg</span><br><span class="line">    │   │       user.png</span><br><span class="line">    │   │       user1.png</span><br><span class="line">    │   │       user2.png</span><br><span class="line">    │   │       user3.png</span><br><span class="line">    │   │       user4.png</span><br><span class="line">    │   │       user5.png</span><br><span class="line">    │   │</span><br><span class="line">    │   └───sass</span><br><span class="line">    │       │   app.windzo.scss</span><br><span class="line">    │       │</span><br><span class="line">    │       └───css</span><br><span class="line">    │               windzo.css</span><br><span class="line">    │               windzo.css.map</span><br><span class="line">    │</span><br><span class="line">    ├───components</span><br><span class="line">    │       AppAccordion.vue</span><br><span class="line">    │       Dropdown.vue</span><br><span class="line">    │       Footer.vue</span><br><span class="line">    │       Header.vue</span><br><span class="line">    │       MenuAccordion.vue</span><br><span class="line">    │       Sidebar.vue</span><br><span class="line">    │</span><br><span class="line">    ├───router</span><br><span class="line">    │       index.js</span><br><span class="line">    │</span><br><span class="line">    └───views</span><br><span class="line">        │   Dashboard.vue</span><br><span class="line">        │</span><br><span class="line">        └───components</span><br><span class="line">                accordion.vue</span><br><span class="line">                alert.vue</span><br><span class="line">                badges.vue</span><br><span class="line">                breadcumbs.vue</span><br><span class="line">                button.vue</span><br><span class="line">                card.vue</span><br></pre></td></tr></table></figure>
+
+<h3 id="Structure"><a href="#Structure" class="headerlink" title="Structure"></a>Structure</h3><p>The whole frontend is based on <code>NodeJs</code> and <code>Vue.js</code> framework. The intention is to create a dynamic web application that allows user interaction from <strong>web brosers</strong> for an immersive user experience, and without the need to interact with the server API to change the web content. <em>In this project we used Windzo as a template</em> (See <a target="_blank" rel="noopener" href="https://github.com/sahrullahh/windzo">sahrullahh&#x2F;windzo: Free Open Source Template Dashboard Admin Vue Tailwind CSS (github.com)</a>).</p>
+<p>The frontend and the backend uses <strong>Rest API</strong> to communicate: The frontend uses <code>get</code> method to get the data from the backend server. When necessary, it also uses <code>post</code>  method to post configurations and operations to the backend server for further actions.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Navigation</span><br><span class="line">├───DashBoard</span><br><span class="line">├───ComponentTest</span><br><span class="line">│       ├───Accordion</span><br><span class="line">│       ├───Alert</span><br><span class="line">│       ├───Badges</span><br><span class="line">│       ├───Breadcumbs</span><br><span class="line">│       ├───Button</span><br><span class="line">│       ├───Card</span><br><span class="line">│       └───Badges</span><br><span class="line">└───OnlineTest</span><br></pre></td></tr></table></figure>
+
+<h4 id="DashBoard"><a href="#DashBoard" class="headerlink" title="DashBoard"></a>DashBoard</h4><p>In this views, we implement two  main scenes.</p>
+<h5 id="World-Map"><a href="#World-Map" class="headerlink" title="World Map"></a>World Map</h5><p>In this scene, we can choose some groupIds  by some buttons, then the world map will display the number of the dependency，</p>
+<p>which is ordered by country and each country will generate a color based on the number of dependencies. (The color will be changed by the groupId.)</p>
+<p>Besides, we add some events in the map ,when the mouse passby some countries, it will display the amount of the dependencies of the country. </p>
+<h2 id="Backend"><a href="#Backend" class="headerlink" title="Backend"></a>Backend</h2><p>File tree</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">├───java</span><br><span class="line">│   └───edu</span><br><span class="line">│       └───sustech</span><br><span class="line">│           ├───backend</span><br><span class="line">│           │   ├───controller</span><br><span class="line">│           │   │   └───API</span><br><span class="line">│           │   ├───dao</span><br><span class="line">│           │   ├───dto</span><br><span class="line">│           │   ├───entities</span><br><span class="line">│           │   └───service</span><br><span class="line">│           │       └───models</span><br><span class="line">│           └───search</span><br><span class="line">│               └───engine</span><br><span class="line">│                   └───github</span><br><span class="line">│                       ├───analyzer</span><br><span class="line">│                       ├───API</span><br><span class="line">│                       │   ├───rate</span><br><span class="line">│                       │   └───search</span><br><span class="line">│                       │       └───requests</span><br><span class="line">│                       ├───models</span><br><span class="line">│                       │   ├───code</span><br><span class="line">│                       │   ├───commit</span><br><span class="line">│                       │   ├───content</span><br><span class="line">│                       │   ├───githubapp</span><br><span class="line">│                       │   ├───issue</span><br><span class="line">│                       │   ├───label</span><br><span class="line">│                       │   ├───pullrequests</span><br><span class="line">│                       │   ├───repository</span><br><span class="line">│                       │   ├───topic</span><br><span class="line">│                       │   └───user</span><br><span class="line">│                       ├───parser</span><br><span class="line">│                       └───transformer</span><br><span class="line">└───resources</span><br><span class="line">    └───dao</span><br></pre></td></tr></table></figure>
+
+<h5 id="Dependency-Usage"><a href="#Dependency-Usage" class="headerlink" title="Dependency Usage"></a>Dependency Usage</h5><p>In this part, we can statics the top used dependency.</p>
+<p>In order to improve the user’s experience, we also provide two tables for filtering. See the figure in the headers.</p>
+<h3 id="Controller"><a href="#Controller" class="headerlink" title="Controller"></a>Controller</h3><h4 id="getTopUsedDependencies"><a href="#getTopUsedDependencies" class="headerlink" title="getTopUsedDependencies"></a>getTopUsedDependencies</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;data/top-used-dependencies&quot;)</span></span><br><span class="line"><span class="keyword">public</span> ResponseEntity&lt;String&gt; <span class="title function_">getTopUsedDependencies</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestParam(value = &quot;group&quot;, required = false)</span> String group,</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestParam(value = &quot;date&quot;, required = false)</span> Date date,</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestParam(value = &quot;count&quot;, required = false, defaultValue = &quot;10&quot;)</span> Integer count)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> ResponseEntity.ok(backendService.getTopUsedDependencies(group, date, count));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This method returns the top used dependencies using specific param: <strong>group、date、count</strong></p>
+<p>The frontend can also set no search param to get the general result</p>
+<h4 id="getTopUsedVersions"><a href="#getTopUsedVersions" class="headerlink" title="getTopUsedVersions"></a>getTopUsedVersions</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;data/top-used-version&quot;)</span></span><br><span class="line"><span class="keyword">public</span> ResponseEntity&lt;String&gt; <span class="title function_">getTopUsedVersions</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestParam(&quot;group&quot;)</span> String group,</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestParam(&quot;arifact&quot;)</span> String artifact,</span></span><br><span class="line"><span class="params">    <span class="meta">@RequestParam(value = &quot;year&quot;, required = false)</span> Integer year)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> ResponseEntity.ok(backendService.getTopUsedVersions(group, artifact, year));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This method returns the top used versions of specific <strong>group</strong>‘s <strong>artifact</strong> in a specific <strong>year(not neccessary)</strong> to frontend</p>
+<h4 id="getGroups"><a href="#getGroups" class="headerlink" title="getGroups"></a>getGroups</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;groups&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">getGroups</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> backendService.getAvailableGroupSelections();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This method returns the group list that the user can select</p>
+<h4 id="update"><a href="#update" class="headerlink" title="update"></a>update</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;local/update-all&quot;)</span></span><br><span class="line"><span class="keyword">public</span> ResponseEntity&lt;String&gt; <span class="title function_">update</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException &#123;</span><br><span class="line">    <span class="keyword">if</span> (status == UpdateStatus.NOT_INITIATED) &#123;</span><br><span class="line">        status = UpdateStatus.PROGRESS;</span><br><span class="line">        updateData();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;<span class="keyword">return</span> ResponseEntity.badRequest().body(<span class="string">&quot;Failed. The update is initiated: &quot;</span> + status);&#125;</span><br><span class="line">    <span class="keyword">return</span> ResponseEntity.ok(<span class="string">&quot;OK. Update status: &quot;</span> + status);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>This method updates all the data for frontend by invoking the GitHub Search Engine.</p>
+<h3 id="GitHub-Search-Engine"><a href="#GitHub-Search-Engine" class="headerlink" title="GitHub Search Engine"></a>GitHub Search Engine</h3><p>To make the searching process more fluently, automatically and more robust, we introduce the GitHub Search Engine.</p>
+<p>This GitHub Search Engine has iterated <em>several</em> times, been published to GitHub and has till now released several packages of different versions. You can check them on <a target="_blank" rel="noopener" href="https://github.com/IskXCr/GitHubSearchEngine">IskXCr&#x2F;GitHubSearchEngine: A GitHub search engine for backend application</a>. To load the GitHub Search Engine from GitHub Packages, you may need to configure your local <code>.m2</code> maven repository settings (which is typically under the <code>Users/&#123;UserName&#125;</code> folder, if Windows is considered).</p>
+<h4 id="File-Tree"><a href="#File-Tree" class="headerlink" title="File Tree"></a>File Tree</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br></pre></td><td class="code"><pre><span class="line">edu.sustech</span><br><span class="line">└───engine</span><br><span class="line">    ├───github</span><br><span class="line">    │   ├───analyzer</span><br><span class="line">    │   │       Analyzer.java</span><br><span class="line">    │   │</span><br><span class="line">    │   ├───API</span><br><span class="line">    │   │   │   ContentAPI.java</span><br><span class="line">    │   │   │   FileAPI.java</span><br><span class="line">    │   │   │   GitHubAPI.java</span><br><span class="line">    │   │   │   RepositoryAPI.java</span><br><span class="line">    │   │   │   RequestRateExceededException.java</span><br><span class="line">    │   │   │   RestAPI.java</span><br><span class="line">    │   │   │   SearchAPI.java</span><br><span class="line">    │   │   │   UserAPI.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───rate</span><br><span class="line">    │   │   │       ActionsRunnerRegistration.java</span><br><span class="line">    │   │   │       CodeScanningUpload.java</span><br><span class="line">    │   │   │       Core.java</span><br><span class="line">    │   │   │       Graphql.java</span><br><span class="line">    │   │   │       IntegrationManifest.java</span><br><span class="line">    │   │   │       Rate.java</span><br><span class="line">    │   │   │       RateLimitResult.java</span><br><span class="line">    │   │   │       Resources.java</span><br><span class="line">    │   │   │       Scim.java</span><br><span class="line">    │   │   │       Search.java</span><br><span class="line">    │   │   │       SourceImport.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───repository</span><br><span class="line">    │   │   ├───search</span><br><span class="line">    │   │   │   │   ETag.java</span><br><span class="line">    │   │   │   │   InvalidResultException.java</span><br><span class="line">    │   │   │   │</span><br><span class="line">    │   │   │   └───requests</span><br><span class="line">    │   │   │           CodeSearchRequest.java</span><br><span class="line">    │   │   │           CommitSearchRequest.java</span><br><span class="line">    │   │   │           IPRSearchRequest.java</span><br><span class="line">    │   │   │           LabelSearchRequest.java</span><br><span class="line">    │   │   │           RepoSearchRequest.java</span><br><span class="line">    │   │   │           SearchRequest.java</span><br><span class="line">    │   │   │           TopicSearchRequest.java</span><br><span class="line">    │   │   │           UserSearchRequest.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   └───user</span><br><span class="line">    │   ├───models</span><br><span class="line">    │   │   │   Alias.java</span><br><span class="line">    │   │   │   APIErrorMessage.java</span><br><span class="line">    │   │   │   AppendableResult.java</span><br><span class="line">    │   │   │   Author.java</span><br><span class="line">    │   │   │   AuthorAssociation.java</span><br><span class="line">    │   │   │   CodeOfConduct.java</span><br><span class="line">    │   │   │   Dependency.java</span><br><span class="line">    │   │   │   Entry.java</span><br><span class="line">    │   │   │   License.java</span><br><span class="line">    │   │   │   Match.java</span><br><span class="line">    │   │   │   Milestone.java</span><br><span class="line">    │   │   │   OAuthToken.java</span><br><span class="line">    │   │   │   Owner.java</span><br><span class="line">    │   │   │   Parent.java</span><br><span class="line">    │   │   │   Permissions.java</span><br><span class="line">    │   │   │   Reactions.java</span><br><span class="line">    │   │   │   Related.java</span><br><span class="line">    │   │   │   State.java</span><br><span class="line">    │   │   │   TextMatch.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───code</span><br><span class="line">    │   │   │       CodeItem.java</span><br><span class="line">    │   │   │       CodeResult.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───commit</span><br><span class="line">    │   │   │       Commit.java</span><br><span class="line">    │   │   │       CommitItem.java</span><br><span class="line">    │   │   │       CommitResult.java</span><br><span class="line">    │   │   │       Tree.java</span><br><span class="line">    │   │   │       Verification.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───content</span><br><span class="line">    │   │   │       ContentDirectory.java</span><br><span class="line">    │   │   │       ContentFile.java</span><br><span class="line">    │   │   │       Links.java</span><br><span class="line">    │   │   │       RawContent.java</span><br><span class="line">    │   │   │       SymlinkContent.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───filetree</span><br><span class="line">    │   │   ├───githubapp</span><br><span class="line">    │   │   │       GitHubApp.java</span><br><span class="line">    │   │   │       Permissions.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───issue</span><br><span class="line">    │   │   │       IPRResult.java</span><br><span class="line">    │   │   │       Issue.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───label</span><br><span class="line">    │   │   │       Label.java</span><br><span class="line">    │   │   │       LabelResult.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───pullrequests</span><br><span class="line">    │   │   │       PullRequest.java</span><br><span class="line">    │   │   │       PullRequestResult.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───repository</span><br><span class="line">    │   │   │       Repository.java</span><br><span class="line">    │   │   │       RepositoryResult.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   ├───topic</span><br><span class="line">    │   │   │       Topic.java</span><br><span class="line">    │   │   │       TopicRelation.java</span><br><span class="line">    │   │   │       TopicResult.java</span><br><span class="line">    │   │   │</span><br><span class="line">    │   │   └───user</span><br><span class="line">    │   │           User.java</span><br><span class="line">    │   │           UserResult.java</span><br><span class="line">    │   │</span><br><span class="line">    │   ├───parser</span><br><span class="line">    │   │       JsonSchemaParser.java</span><br><span class="line">    │   │</span><br><span class="line">    │   ├───test</span><br><span class="line">    │   └───transformer</span><br><span class="line">    │           Transformer.java</span><br><span class="line">    │</span><br><span class="line">    └───stackoverflow</span><br></pre></td></tr></table></figure>
+
+<h4 id="Functionality-amp-Features"><a href="#Functionality-amp-Features" class="headerlink" title="Functionality &amp; Features"></a>Functionality &amp; Features</h4><p>The engine has a <em><strong>full implementation (except for acquiring Trees)</strong></em>  of the search function of the GitHub Rest API (<code>SearchAPI</code>) and provides*** Java abstractions*** for dealing with entities present in GitHub (for example, <code>Repository</code>, <code>User</code>, <code>Issues</code>, <code>Commits</code>, etc. Those existing models can be found inside the <code>models</code> directory in the source code). It also provides additional <em><strong>partially implemented</strong></em> APIs such as <code>UserAPI</code>, <code>RepositoryAPI</code> and <code>RateAPI</code> for other needs such as tracing user locations and attain the information related to real-time GitHub rate limits, get the contributions of an user to a specific repository, etc.</p>
+<p>Search requests and along with other operations can be constructed through <em><strong>pure Java codes</strong></em> and be passed to the <code>SearchAPI</code> or <code>RepositoryAPI</code>, etc. In the implementation of the <code>SearchAPI</code>, all http responses received and the process of parsing , error&#x2F;exception processing and loop fetching (fetch until results acquired are more than or equals to the desired number of results, which is a parameter that can be either specified or left to <code>Integer.MAX_VALUE</code>) are <em><strong>hidden at default</strong></em> from the caller. The user of this engine is able to manipulate the interaction with the GitHub SearchEngine (<em><strong>without</strong></em> even learning the GitHub RestAPI) in a Java way and does not need to care about the inner processing and handling. Advanced manipulations of the engine can also be done with specified request parameters and through the usage of the generic methods pre-implemented.</p>
+<p>All APIs are extended from the basic class <code>RestAPI</code>. <code>RestAPI</code> provides the basic functionality to communicate with the GitHub RestAPI, retrieving data from it, and parse the result into a required object.</p>
+<img src="/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220523211104329.png" alt="image-20220523211104329">
+
+
+
+<p><img src="/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220523212251799.png" alt="image-20220523212251799"></p>
+<p><img src="/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220523211717048.png" alt="image-20220523211717048"></p>
+<p><img src="/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220523212133552.png" alt="image-20220523212133552"></p>
+<h4 id="Major-Implementations-in-the-SearchAPI"><a href="#Major-Implementations-in-the-SearchAPI" class="headerlink" title="Major Implementations in the SearchAPI"></a>Major Implementations in the <code>SearchAPI</code></h4><h5 id="searchLoopFetching-method"><a href="#searchLoopFetching-method" class="headerlink" title="searchLoopFetching method"></a>searchLoopFetching method</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> AppendableResult <span class="title function_">searchLoopFetching</span><span class="params">(SearchRequest request1, </span></span><br><span class="line"><span class="params">                                           <span class="meta">@Nullable</span> AppendableResult origin </span></span><br><span class="line"><span class="params">                                           AppendableResultParser p, </span></span><br><span class="line"><span class="params">                                           <span class="type">int</span> count, </span></span><br><span class="line"><span class="params">                                           <span class="type">long</span> timeIntervalMillis)</span> <span class="keyword">throws</span> InterruptedException, IOException &#123;...&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>This method uses <code>AppendableResult</code> as both one of the parameters and the result. The <code>AppendableResultParser</code> is an <code>@FunctionalInterface</code>, allowing the parsing and the manipulation of the object with unknown type.</p>
+<h5 id="searchLoopFetching-method-Generic"><a href="#searchLoopFetching-method-Generic" class="headerlink" title="searchLoopFetching method (Generic)"></a>searchLoopFetching method (Generic)</h5><p>This method needs the target class to implement <code>AppendableResult</code> interface for combining result data from different responses.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * This method uses while loop to request for search results.</span></span><br><span class="line"><span class="comment">     * Please notice that the GitHub REST API may severely restrict your ability to query the result.</span></span><br><span class="line"><span class="comment">     * &lt;br&gt;</span></span><br><span class="line"><span class="comment">     * If too often the secondary rate limit is encountered, please increase the &lt;code&gt;timeIntervalMillis&lt;/code&gt;</span></span><br><span class="line"><span class="comment">     * (a typical recommendation might be &lt;code&gt;18000&lt;/code&gt;), and run this method in another thread.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> &lt;T&gt;                Result type</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request1           Request (will create another copy)</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> targetClazz        Target class for object mapper</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> count              Target Item count. Note that the actual items retrieved might be more</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> timeIntervalMillis Preferred time interval between requests</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> CodeResult</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> IOException</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> InterruptedException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T <span class="keyword">extends</span> <span class="title class_">AppendableResult</span>&gt; T <span class="title function_">searchType</span><span class="params">(SearchRequest request1, </span></span><br><span class="line"><span class="params">                                                     Class&lt;T&gt; targetClazz, </span></span><br><span class="line"><span class="params">                                                     <span class="type">int</span> count, </span></span><br><span class="line"><span class="params">                                                     <span class="type">long</span> timeIntervalMillis)</span> <span class="keyword">throws</span> IOException, InterruptedException &#123;</span><br><span class="line">        <span class="keyword">return</span> (T) searchLoopFetching(request1, </span><br><span class="line">                                      s -&gt; convert(s, targetClazz), </span><br><span class="line">                                      count, </span><br><span class="line">                                      timeIntervalMillis); <span class="comment">//It must be T, so no worry.</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>An automatical loop for dealing with the common exceptions, including <code>timeout</code>, <code>RateLimitExceeded</code> has been constructed to improve the user experience when in autonomous mode.</p>
+<h4 id="Basic-Usage-A-demonstration"><a href="#Basic-Usage-A-demonstration" class="headerlink" title="Basic Usage (A demonstration)"></a>Basic Usage (A demonstration)</h4><h5 id="Build-a-request"><a href="#Build-a-request" class="headerlink" title="Build a request"></a>Build a request</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">CodeSearchRequest</span> <span class="variable">req1</span> <span class="operator">=</span> CodeSearchRequest.newBuilder()</span><br><span class="line">       .addSearchField(CodeSearchRequest.SearchBy.Filename, <span class="string">&quot;pom.xml&quot;</span>)</span><br><span class="line">	.addLanguageOption(<span class="string">&quot;Maven POM&quot;</span>)</span><br><span class="line">	.build();</span><br></pre></td></tr></table></figure>
+
+<p>Similar searches can be done on <code>Issues</code>, <code>Pull Requests</code>, <code>Commits</code>, <code>Users</code>, <code>Repositories</code>, <code>RawFiles</code>.</p>
+<p>A detailed list on how to  construct queries are listed below (the example only contains the method in <code>CodeSearchRequest.RequestBuilder()</code>)</p>
+<p>Similarly will we have <code>RepoSearchRequest</code>, <code>IPRSearchRequest</code>, <code>UserSearchRequest</code>, etc.</p>
+<p>Note that for <em><strong>all</strong></em> SearchRequests, the methods of them have been <em><strong>fully implemented</strong></em>.</p>
+<h4 id="Example-Usage"><a href="#Example-Usage" class="headerlink" title="Example Usage"></a>Example Usage</h4><h5 id="Search-in-GitHub"><a href="#Search-in-GitHub" class="headerlink" title="Search in GitHub"></a>Search in GitHub</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Register the API</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="type">GitHubAPI</span> <span class="variable">gitHubAPI</span> <span class="operator">=</span> GitHubAPI.registerAPI(PersonalAccessToken);</span><br><span class="line"></span><br><span class="line"><span class="type">CodeSearchRequest</span> <span class="variable">req1</span> <span class="operator">=</span> CodeSearchRequest.newBuilder()</span><br><span class="line">		.addSearchKeyword(<span class="string">&quot;dependency&quot;</span>)</span><br><span class="line">		.addSearchField(CodeSearchRequest.SearchBy.Filename, <span class="string">&quot;pom.xml&quot;</span>)</span><br><span class="line"> 			.addLanguageOption(<span class="string">&quot;Maven POM&quot;</span>)</span><br><span class="line">		.build();</span><br><span class="line"></span><br><span class="line"><span class="type">CodeResult</span> <span class="variable">result1</span> <span class="operator">=</span> gitHubAPI.searchAPI.searchCode(req1, </span><br><span class="line">                                                       count, </span><br><span class="line">                                                      LOCAL_SEARCH_UPDATE_INTERVAL_MILLIS);</span><br></pre></td></tr></table></figure>
+
+<h5 id="Query-the-results"><a href="#Query-the-results" class="headerlink" title="Query the results"></a>Query the results</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(CodeItem item: result1)&#123;</span><br><span class="line">       </span><br><span class="line">       <span class="type">Repository</span> <span class="variable">repo</span> <span class="operator">=</span> item.getRepository();</span><br><span class="line">       System.out.println(repo.getFullName() + <span class="string">&quot;, &quot;</span> + item.getName());</span><br><span class="line">       </span><br><span class="line">       <span class="comment">//Get the list of contributors</span></span><br><span class="line">       List&lt;User&gt; userList = gitHubAPI.repositoryAPI.getContributors(repo);</span><br><span class="line">       </span><br><span class="line">       <span class="comment">//Sort users by their contributions in the specific repository </span></span><br><span class="line">	userList.sort(Comparator.comparingInt(User::getContributions).reversed());</span><br><span class="line">       <span class="keyword">for</span>(User user: userList)&#123;</span><br><span class="line">           System.out.println(user.getLogin());</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Abstractions"><a href="#Abstractions" class="headerlink" title="Abstractions"></a>Abstractions</h4><p><strong>All</strong> items related to the <strong>search</strong> part of the GitHub RestAPI has been implemented. See the file tree above to get more info.</p>
+<p>These objects provides a basic but complex abstraction of entities on the GitHub website. At the same time, all the objects are POJOs and can be easily serialized and deserialized.</p>
+<h4 id="Implementation-of-the-GitHub-Search-Engine-Partially"><a href="#Implementation-of-the-GitHub-Search-Engine-Partially" class="headerlink" title="Implementation of the GitHub Search Engine (Partially)"></a>Implementation of the GitHub Search Engine (Partially)</h4><p>See the source code.</p>
+<h4 id="Documentations"><a href="#Documentations" class="headerlink" title="Documentations"></a>Documentations</h4><p>Documentations will later be generated in the format of JavaDoc directly from those JavaDoc embedded in the code. The code implements the basic methods all as generic, and users are expected to check the documents of those generic methods when encountering specific problems with the implementation of a specifc method (that is related to a certain abstraction, for example <code>User</code>).</p>
+<h3 id="Data-Persistence"><a href="#Data-Persistence" class="headerlink" title="Data Persistence"></a>Data Persistence</h3><p>We use two methods for data persistence:</p>
+<h4 id="Database"><a href="#Database" class="headerlink" title="Database"></a>Database</h4><p>We use cloud <strong>MySQL</strong> database and <strong>Mybatis</strong> ORM framework</p>
+<p>.<img src="/2022/05/16/Java2Project%E6%8A%A5%E5%91%8A/image-20220522220830677.png" alt="image-20220522220830677" style="zoom:80%;"></p>
+<p>Here is an dto example</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Version</span> &#123;</span><br><span class="line">	Integer id;</span><br><span class="line">	String version;</span><br><span class="line">	Integer count;</span><br><span class="line">	Integer artifactId;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Here is an dao example, we use <strong>Mybatis</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">VersionDao</span> &#123;</span><br><span class="line">	<span class="type">int</span> <span class="title function_">insert</span><span class="params">(<span class="meta">@Param(&quot;version&quot;)</span> String version,<span class="meta">@Param(&quot;artifactId&quot;)</span> Integer artifactId)</span>;</span><br><span class="line"></span><br><span class="line">	Version <span class="title function_">get</span><span class="params">(<span class="meta">@Param(&quot;version&quot;)</span> String version,<span class="meta">@Param(&quot;artifactId&quot;)</span> Integer artifactId)</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//count++</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">increment</span><span class="params">(<span class="meta">@Param(&quot;id&quot;)</span> Integer id,<span class="meta">@Param(&quot;newCount&quot;)</span> Integer newCount)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">mapper</span> <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span> <span class="string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;edu.sustech.backend.dao.VersionDao&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;insert&quot;</span>&gt;</span></span><br><span class="line">        insert into version(version, count, artifact_id) values (#&#123;version&#125;,1,#&#123;artifactId&#125;)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;get&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Version&quot;</span>&gt;</span></span><br><span class="line">        select * from version where version=#&#123;version&#125; and artifact_id=#&#123;artifactId&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;increment&quot;</span>&gt;</span></span><br><span class="line">        update version set count=#&#123;newCount&#125; where id=#&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="File"><a href="#File" class="headerlink" title="File"></a>File</h4><p>Besides the database, we also use files, which stores the json data of the repo dependency information.</p>
+<h3 id="Dependency-Analysis-Insights"><a href="#Dependency-Analysis-Insights" class="headerlink" title="Dependency Analysis Insights"></a>Dependency Analysis Insights</h3><p><code>Log4j</code> and <code>JUnit</code> has been the most dependencies along repositories sampled. We found that dependencies that are related to loggings and tests are widely used in the sampled repositories.</p>
+<p><code>Lombok</code> are used most frequently in China, <code>Spring</code> are adopted more frequently in the United States, and <code>MySql</code> are used quite frequently in China.</p>
+<p>Along the sampled repositories, it seemed that developers in China prefer to use more tools related to the editing, verifying and building process of the whole lifecycle in Maven-based projects, whereas developers in the United States seems to be developing small network servers, or micro-services more (which indirectly results in the trending usage of <code>Spring</code> and its related transitive dependencies, along with other dependencies that provides a more frequently used result).</p>
+<p>We found that developers are more concentrated in the European region, and that developers in China have contributed more that many western countries. People in South America has also contributed a lot, but the numbers are relatively much lower when compared to developers in China.</p>
+<p>We found that the GitHub Rest API frequently occur secondary-rate-limitations, which is not good for web-scraping and data collection and analysis. Thus, we have only about 1000 sampled data.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/01/05/%E6%95%B0%E6%8D%AE%E5%BA%93Project2%E6%8A%A5%E5%91%8A/" rel="prev" title="数据库原理(CS307)Project2报告">
+      <i class="fa fa-chevron-left"></i> 数据库原理(CS307)Project2报告
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/05/31/%E8%AE%A1%E7%BD%91Project%E6%8A%A5%E5%91%8A/" rel="next" title="计算机网络(CS305)期末Project报告">
+      计算机网络(CS305)期末Project报告 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Project-Structure"><span class="nav-number">2.</span> <span class="nav-text">Project Structure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Frontend"><span class="nav-number">3.</span> <span class="nav-text">Frontend</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Structure"><span class="nav-number">3.1.</span> <span class="nav-text">Structure</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DashBoard"><span class="nav-number">3.1.1.</span> <span class="nav-text">DashBoard</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#World-Map"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">World Map</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backend"><span class="nav-number">4.</span> <span class="nav-text">Backend</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Dependency-Usage"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">Dependency Usage</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Controller"><span class="nav-number">4.1.</span> <span class="nav-text">Controller</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#getTopUsedDependencies"><span class="nav-number">4.1.1.</span> <span class="nav-text">getTopUsedDependencies</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getTopUsedVersions"><span class="nav-number">4.1.2.</span> <span class="nav-text">getTopUsedVersions</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getGroups"><span class="nav-number">4.1.3.</span> <span class="nav-text">getGroups</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#update"><span class="nav-number">4.1.4.</span> <span class="nav-text">update</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitHub-Search-Engine"><span class="nav-number">4.2.</span> <span class="nav-text">GitHub Search Engine</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#File-Tree"><span class="nav-number">4.2.1.</span> <span class="nav-text">File Tree</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Functionality-amp-Features"><span class="nav-number">4.2.2.</span> <span class="nav-text">Functionality &amp; Features</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Major-Implementations-in-the-SearchAPI"><span class="nav-number">4.2.3.</span> <span class="nav-text">Major Implementations in the SearchAPI</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#searchLoopFetching-method"><span class="nav-number">4.2.3.1.</span> <span class="nav-text">searchLoopFetching method</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#searchLoopFetching-method-Generic"><span class="nav-number">4.2.3.2.</span> <span class="nav-text">searchLoopFetching method (Generic)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Basic-Usage-A-demonstration"><span class="nav-number">4.2.4.</span> <span class="nav-text">Basic Usage (A demonstration)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Build-a-request"><span class="nav-number">4.2.4.1.</span> <span class="nav-text">Build a request</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Example-Usage"><span class="nav-number">4.2.5.</span> <span class="nav-text">Example Usage</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Search-in-GitHub"><span class="nav-number">4.2.5.1.</span> <span class="nav-text">Search in GitHub</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Query-the-results"><span class="nav-number">4.2.5.2.</span> <span class="nav-text">Query the results</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Abstractions"><span class="nav-number">4.2.6.</span> <span class="nav-text">Abstractions</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Implementation-of-the-GitHub-Search-Engine-Partially"><span class="nav-number">4.2.7.</span> <span class="nav-text">Implementation of the GitHub Search Engine (Partially)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Documentations"><span class="nav-number">4.2.8.</span> <span class="nav-text">Documentations</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-Persistence"><span class="nav-number">4.3.</span> <span class="nav-text">Data Persistence</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Database"><span class="nav-number">4.3.1.</span> <span class="nav-text">Database</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#File"><span class="nav-number">4.3.2.</span> <span class="nav-text">File</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dependency-Analysis-Insights"><span class="nav-number">4.4.</span> <span class="nav-text">Dependency Analysis Insights</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">WLQ</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WLQ</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
