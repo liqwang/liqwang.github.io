@@ -146,6 +146,127 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2021/09/21/MySQL%E7%9A%84%E5%B9%B6%E5%8F%91%E4%B8%8EMVCC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WLQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WLQ's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/21/MySQL%E7%9A%84%E5%B9%B6%E5%8F%91%E4%B8%8EMVCC/" class="post-title-link" itemprop="url">MySQL的并发与MVCC</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-21 20:15:15" itemprop="dateCreated datePublished" datetime="2021-09-21T20:15:15+08:00">2021-09-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-23 11:52:47" itemprop="dateModified" datetime="2021-09-23T11:52:47+08:00">2021-09-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="事务的ACID属性"><a href="#事务的ACID属性" class="headerlink" title="事务的ACID属性"></a>事务的ACID属性</h2><ul>
+<li>Atomicity原子性</li>
+<li>Consistency一致性：从实际的业务逻辑上来说，最终结果是对的，是跟期望的结果完全符合的，比如转账的加减</li>
+<li>Isolation隔离性</li>
+<li>Durability持久性：事务一旦提交，数据会持久化到硬盘，他对数据库的改变是永久性的</li>
+</ul>
+<h2 id="四大隔离级别★"><a href="#四大隔离级别★" class="headerlink" title="四大隔离级别★"></a>四大隔离级别★</h2><table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center">脏读 Dirty read</th>
+<th align="center">不可重复读 Non repeatable read</th>
+<th align="center">幻读 Phantom read</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">读未提交 Read uncommited</td>
+<td align="center">√</td>
+<td align="center">√</td>
+<td align="center">×</td>
+</tr>
+<tr>
+<td align="center">读已提交 Read commited</td>
+<td align="center">×</td>
+<td align="center">√</td>
+<td align="center">×</td>
+</tr>
+<tr>
+<td align="center">可重复读 Repeatable read</td>
+<td align="center">×</td>
+<td align="center">×</td>
+<td align="center">√</td>
+</tr>
+<tr>
+<td align="center">穿行 Serializable</td>
+<td align="center">×</td>
+<td align="center">×</td>
+<td align="center">×</td>
+</tr>
+</tbody></table>
+<h2 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h2>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/21/MySQL%E7%9A%84%E5%B9%B6%E5%8F%91%E4%B8%8EMVCC/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
     <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2021/07/23/%E6%89%8B%E6%92%95%E7%AE%97%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -899,92 +1020,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN,en,default">
-    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2021/03/14/%E5%B9%B3%E8%A1%A1%E6%A0%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="WLQ">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="WLQ's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/03/14/%E5%B9%B3%E8%A1%A1%E6%A0%91/" class="post-title-link" itemprop="url">平衡树</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-03-14 11:55:36" itemprop="dateCreated datePublished" datetime="2021-03-14T11:55:36+08:00">2021-03-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-03-16 20:25:59" itemprop="dateModified" datetime="2021-03-16T20:25:59+08:00">2021-03-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构与算法</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本文总结了三种平衡树：<strong>B+树、红黑树、AVL树</strong></p>
-<h2 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h2><ul>
-<li>B树应用：磁盘上的文件</li>
-</ul>
-<p>.<img src="/2021/03/14/%E5%B9%B3%E8%A1%A1%E6%A0%91/image-20220212223541736.png" alt="image-20220212223541736" style="zoom: 67%;"></p>
-<p>.<img src="/2021/03/14/%E5%B9%B3%E8%A1%A1%E6%A0%91/image-20220212223611051.png" alt="image-20220212223611051" style="zoom: 60%;"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/03/14/%E5%B9%B3%E8%A1%A1%E6%A0%91/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1054,7 +1089,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
