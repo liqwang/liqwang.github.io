@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN,en,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"blog.quanquancho.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="文章 https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;164696755 的学习笔记 CookieCookie是不可跨域的，每个Cookie都会绑定单一的域名，但一级域名和二级域名之间是允许共享使用的(利用domain字段)     注意事项">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cookie、Session、Token、JWT">
+<meta property="og:url" content="https://blog.quanquancho.com/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/">
+<meta property="og:site_name" content="WLQ&#39;s Blog">
+<meta property="og:description" content="文章 https:&#x2F;&#x2F;zhuanlan.zhihu.com&#x2F;p&#x2F;164696755 的学习笔记 CookieCookie是不可跨域的，每个Cookie都会绑定单一的域名，但一级域名和二级域名之间是允许共享使用的(利用domain字段)     注意事项">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-e3e9981e1aa6818285f1981ba92eeb15_720w.jpg">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-369c25ea411974a1cd4d6ed69d533bcb_720w.jpg">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-c716fc51fe283710dda851d25b731fab_720w.jpg">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-d048151dfda156385cb979d5bc08ab68_720w.jpg">
+<meta property="og:image" content="https://blog.quanquancho.com/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-aa19a381cbae00402e82b710f2db6e06_720w.jpg">
+<meta property="article:published_time" content="2022-07-29T11:49:54.000Z">
+<meta property="article:modified_time" content="2022-07-29T13:57:56.000Z">
+<meta property="article:author" content="WLQ">
+<meta property="article:tag" content="blog">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.quanquancho.com/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-e3e9981e1aa6818285f1981ba92eeb15_720w.jpg">
+
+<link rel="canonical" href="https://blog.quanquancho.com/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Cookie、Session、Token、JWT | WLQ's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WLQ's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.quanquancho.com/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WLQ">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WLQ's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Cookie、Session、Token、JWT
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-07-29 19:49:54 / 修改时间：21:57:56" itemprop="dateCreated datePublished" datetime="2022-07-29T19:49:54+08:00">2022-07-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9D%82/" itemprop="url" rel="index"><span itemprop="name">杂</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>文章 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/164696755">https://zhuanlan.zhihu.com/p/164696755</a> 的学习笔记</p>
+<h2 id="Cookie"><a href="#Cookie" class="headerlink" title="Cookie"></a>Cookie</h2><p>Cookie是<strong>不可跨域</strong>的，每个Cookie都会绑定单一的域名，但<strong>一级域名和二级域名之间是允许共享使用的</strong>(利用domain字段)</p>
+<img src="/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-e3e9981e1aa6818285f1981ba92eeb15_720w.jpg" alt="img">
+
+
+
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>因为存储在客户端，容易被客户端篡改，使用前需要验证合法性</li>
+<li>不要存储敏感数据，比如用户密码，账户余额</li>
+<li>使用 httpOnly 在一定程度上提高安全性</li>
+<li>尽量减少 Cookie 的体积，能存储的数据量不能超过 4kb</li>
+<li>设置正确的 domain 和 path，减少数据传输</li>
+<li><strong>Cookie 无法跨域</strong></li>
+<li>一个浏览器针对一个网站最多存 20 个Cookie，浏览器一般只允许存放 300 个Cookie</li>
+<li><strong>移动端对 Cookie 的支持不是很好，而 Session 需要基于 Cookie 实现，所以移动端常用的是 Token</strong></li>
+</ul>
+<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>Session是基于Cookie实现的，<strong>Session存储在服务器端的内存中，SessionId 会被存储到客户端的Cookie中</strong></p>
+<p>.<img src="/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-369c25ea411974a1cd4d6ed69d533bcb_720w.jpg" alt="img" style="zoom:80%;"></p>
+<p>根据以上流程可知，<strong>SessionID 是连接 Cookie 和 Session 的一道桥梁</strong></p>
+<h3 id="注意事项-1"><a href="#注意事项-1" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>将 Session 存储在服务器里面，当用户同时在线量比较多时，这些 Session 会<strong>占据较多的内存</strong>，服务器需要定期清理过期的 Session</li>
+<li>当网站采用<strong>集群部署</strong>的时候，会遇到多台 Web 服务器之间 Session 不共享的问题，这里就不展开了</li>
+<li>当多个应用要共享 Session 时，还会遇到跨域问题，因为不同的应用可能部署的主机不一样，需要在各个应用做好Cookie的跨域处理</li>
+<li><strong>SessionId 是存储在 Cookie 中的，假如浏览器不支持 Cookie 怎么办？</strong> 一般会把 SessionId 跟在 URL 参数后面即<strong>重写URL</strong>，所以 <strong>Session 不一定非得需要靠 Cookie 实现</strong></li>
+<li><strong>移动端对 Cookie 的支持不是很好，而 Session 需要基于 Cookie 实现，所以移动端常用的是 token</strong></li>
+</ul>
+<h3 id="Cookie-和-Session-的区别"><a href="#Cookie-和-Session-的区别" class="headerlink" title="Cookie 和 Session 的区别"></a><strong>Cookie 和 Session 的区别</strong></h3><ul>
+<li><strong>安全性：</strong> Session 比 Cookie 安全，Session 是存储在服务器端的，Cookie 是存储在客户端的</li>
+<li><strong>存取值的类型不同</strong>：Cookie 只支持存字符串数据，想要设置其他类型的数据，需要将其转换成字符串，Session 可以存任意数据类型</li>
+<li><strong>有效期不同：</strong> Cookie 可设置为长时间保持，比如我们经常使用的默认登录功能，Session 一般失效时间较短，客户端关闭（默认情况下）或者 Session 超时都会失效</li>
+<li><strong>存储大小不同：</strong> 单个 Cookie 保存的数据不能超过 4K，Session 可存储数据远高于 Cookie，但是当访问量过多，会占用过多的服务器资源</li>
+</ul>
+<h2 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h2><h3 id="Acesss-Token"><a href="#Acesss-Token" class="headerlink" title="Acesss Token"></a>Acesss Token</h3><ul>
+<li><p><strong>访问API时所需要的资源凭证</strong></p>
+</li>
+<li><p><strong>简单 token 的组成：</strong> uid(用户唯一的身份标识)、time(当前时间的时间戳)、sign（签名，token 的前几位以哈希算法压缩成的一定长度的十六进制字符串）</p>
+</li>
+<li><p><strong>特点：</strong></p>
+<ul>
+<li><strong>服务端无状态化、可扩展性好</strong></li>
+<li><strong>支持移动端设备</strong></li>
+<li>安全</li>
+<li>支持跨程序调用</li>
+</ul>
+</li>
+</ul>
+<p>.<img src="/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-c716fc51fe283710dda851d25b731fab_720w.jpg" alt="img"></p>
+<ul>
+<li>基于 token 的用户认证是一种服务端无状态的认证方式，<strong>服务端不用存放 token 数据。用解析 token 的计算时间换取 session 的存储空间</strong>，从而减轻服务器的压力，减少频繁的查询数据库</li>
+<li>token 完全由应用管理，所以它可以避开同源策略(???)</li>
+</ul>
+<h3 id="Refresh-Token"><a href="#Refresh-Token" class="headerlink" title="Refresh Token"></a>Refresh Token</h3><p><strong>Refresh Token 是专用于刷新 Access Token 的 Token</strong>。如果没有 refresh token，也可以刷新 access token，但每次刷新都要用户输入登录用户名与密码，会很麻烦。有了 refresh token，可以减少这个麻烦，客户端直接用 refresh token 去更新 access token，无需用户进行额外的操作</p>
+<p>.<img src="/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-d048151dfda156385cb979d5bc08ab68_720w.jpg" alt="img"></p>
+<p><strong>Refresh Token 及过期时间存储在服务器的数据库中</strong>，只有在申请新的 Acesss Token 时才会验证，不会对业务接口响应时间造成影响，也不需要像 Session 一样一直保持在内存中以应对大量的请求</p>
+<h3 id="注意事项-2"><a href="#注意事项-2" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>如果你认为用数据库来存储 Token 会导致查询时间太长，可以选择放在内存当中。比如 Redis 很适合对 Token 查询的需求</li>
+<li><strong>Token 完全由应用管理，所以它可以避开同源策略</strong></li>
+<li><strong>Token 可以避免 CSRF 攻击(因为不需要 cookie 了)</strong></li>
+</ul>
+<h3 id="Token-和-Session-的区别"><a href="#Token-和-Session-的区别" class="headerlink" title="Token 和 Session 的区别"></a><strong>Token 和 Session 的区别</strong></h3><ul>
+<li><p>Session 是一种记录服务器和客户端会话状态的机制，使服务端<strong>有状态化</strong></p>
+<p>Token 是<strong>令牌</strong>，<strong>访问API时所需要的资源凭证</strong>，使服务端<strong>无状态化</strong></p>
+</li>
+<li><p>Session 和 Token 并不矛盾，作为身份认证 Token 安全性比 Session 好，因为每一个请求都有签名还能防止监听以及重放攻击，而 Session 就必须依赖链路层来保障通讯安全了。如果需要实现有状态的会话，仍然可以增加 Session 来在服务器端保存一些状态</p>
+</li>
+<li><p>所谓 Session 认证只是简单的把 User 信息存储到 Session 里，因为 SessionID 的不可预测性，暂且认为是安全的</p>
+<p>而 Token ，如果指的是 OAuth Token 或类似的机制的话，提供的是 认证 和 授权 ，认证是针对用户，授权是针对 App 。其目的是<strong>让某 App 有权利访问某用户的信息</strong>。这里的 Token 是唯一的，不可以转移到其它 App上，也不可以转到其它用户上</p>
+<p>Session 只提供一种简单的认证，即<strong>只要有此 SessionID ，即认为有此 User 的全部权利</strong>。是需要严格保密的，这个数据应该只保存在服务器，不应该共享给其它网站或者第三方 App</p>
+<p>所以简单来说：<strong>如果你的用户数据可能需要和第三方共享，或者允许第三方调用 API 接口，用 Token 。如果永远只是自己的网站，自己的 App，用什么就无所谓了</strong></p>
+</li>
+</ul>
+<h2 id="JWT"><a href="#JWT" class="headerlink" title="JWT"></a>JWT</h2><p>Json Web Token，是目前最流行的<strong>跨域认证</strong>解决方案</p>
+<ul>
+<li><p>JWT 是为了在网络应用环境间<strong>传递声明</strong>而执行的一种基于 JSON 的开放标准（RFC 7519）</p>
+<p>JWT 一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，比如用在用户登录上</p>
+</li>
+<li><p>可以使用 HMAC 算法或者是 RSA 的公&#x2F;私秘钥对 JWT 进行<strong>签名</strong>，增强安全性</p>
+</li>
+</ul>
+<p>认证流程👇</p>
+<p>.<img src="/2022/07/29/Cookie%E3%80%81Session%E3%80%81Token%E3%80%81JWT/v2-aa19a381cbae00402e82b710f2db6e06_720w.jpg" alt="img" style="zoom:90%;"></p>
+<ul>
+<li>因为 JWT 是自包含的（内部包含了一些会话信息），因此减少了需要查询数据库的需要</li>
+<li>因为 JWT 并不使用 Cookie ，所以你可以使用任何域名提供你的 API 服务（<strong>CORS</strong>, Cross-Origin Resource Sharing, 跨域资源共享）</li>
+</ul>
+<p>前后端有三种传递JWT的方式：</p>
+<ul>
+<li>在请求头的 <strong>Authorization</strong> 字段中使用Bearer 模式添加：<code>Authorization: Bearer &lt;token&gt;</code></li>
+<li>在POST请求的body里携带</li>
+<li>在URL中携带：<code>http://www.example.com/user?token=xxx</code></li>
+</ul>
+<h3 id="注意事项-3"><a href="#注意事项-3" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li><p>JWT 默认是不加密，但也是可以加密的。生成原始 Token 以后，可以用密钥再加密一次</p>
+</li>
+<li><p>JWT 不加密的情况下，不能将秘密数据写入 JWT</p>
+</li>
+<li><p>JWT 不仅可以用于认证，也可以用于交换信息。有效使用 JWT，可以降低服务器查询数据库的次数</p>
+</li>
+<li><p>JWT 最大的优势是服务器不再需要存储 Session，使得服务器认证鉴权业务可以方便扩展</p>
+<p>但这也是 JWT 最大的缺点：由于服务器不需要存储 Session 状态，因此使用过程中无法废弃某个 Token 或者更改 Token 的权限。也就是说<strong>一旦 JWT 签发了，到期之前就会始终有效，除非服务器部署额外的逻辑</strong></p>
+</li>
+<li><p>JWT 本身包含了认证信息，一旦泄露，任何人都可以获得该令牌的所有权限。为了减少盗用，JWT的有效期应该设置得比较短。对于一些比较重要的权限，使用时应该再次对用户进行认证</p>
+</li>
+<li><p>JWT 适合一次性的命令认证，颁发一个有效期极短的 JWT，即使暴露了危险也很小，由于每次操作都会生成新的 JWT，因此也没必要保存 JWT，真正实现无状态</p>
+</li>
+</ul>
+<h3 id="Token-和-JWT-的区别"><a href="#Token-和-JWT-的区别" class="headerlink" title="Token 和 JWT 的区别"></a><strong>Token 和 JWT 的区别</strong></h3><ul>
+<li>Token：服务端验证客户端发送过来的 Token 时，还需要查询数据库获取用户信息，然后验证 Token 是否有效</li>
+<li>JWT：将 Token 和 Payload 加密后存储于客户端，服务端只需要使用密钥解密进行校验（校验也是 JWT 自己实现的）即可，<strong>不需要查询或者减少查询数据库</strong>，因为 JWT 自包含了用户信息和加密的数据</li>
+</ul>
+<p>PS: 三种认证授权方案</p>
+<ul>
+<li>Session+Cookie</li>
+<li>Token (如 JWT, SSO)</li>
+<li>OAuth 2.0</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/07/10/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="prev" title="布隆过滤器">
+      <i class="fa fa-chevron-left"></i> 布隆过滤器
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cookie"><span class="nav-number">1.</span> <span class="nav-text">Cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.1.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Session"><span class="nav-number">2.</span> <span class="nav-text">Session</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-1"><span class="nav-number">2.1.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cookie-%E5%92%8C-Session-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.2.</span> <span class="nav-text">Cookie 和 Session 的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Token"><span class="nav-number">3.</span> <span class="nav-text">Token</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Acesss-Token"><span class="nav-number">3.1.</span> <span class="nav-text">Acesss Token</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Refresh-Token"><span class="nav-number">3.2.</span> <span class="nav-text">Refresh Token</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-2"><span class="nav-number">3.3.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Token-%E5%92%8C-Session-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.4.</span> <span class="nav-text">Token 和 Session 的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JWT"><span class="nav-number">4.</span> <span class="nav-text">JWT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-3"><span class="nav-number">4.1.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Token-%E5%92%8C-JWT-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.2.</span> <span class="nav-text">Token 和 JWT 的区别</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">WLQ</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WLQ</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
